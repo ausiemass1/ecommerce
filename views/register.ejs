@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>register</title>
+    <%- include("../partials/user_head.ejs") %>
+  </head>
+
+  <body>
+    <header>
+        <!-- place navbar here -->
+        <%- include("../partials/user_navbar1.ejs") %>
+        <%- include("../partials/user_navbar2.ejs") %>
+    </header>
+   <main>
+    <br>
+      <div class="container">
+        <div class="container">
+          <form action="/insertuser" method="post">
+            <label for="username">Name:</label>
+            <input type="text" name="username" /><br /><br />
+
+            <label for="surname">Surname:</label>
+            <input type="text" name="surname" /><br /><br />
+
+            <label for="phone">Phone:</label>
+            <input type="text" name="phone" /><br /><br />
+
+            <label for="email">Email:</label>
+            <input type="text" name="email" /><br /><br />
+
+            <label for="password">Password:</label>
+            <input type="password" name="password" /><br /><br />
+
+            <input type="submit" value="Register" class="btn btn-primary"/>
+
+            <p>Are you registered? <a href="/login">Login</a></p>
+          </form>
+        </div>
+      </div><br><br>
+    </main>
+    
+        <!-- place footer here -->
+    <%- include("../partials/admin_footer.ejs") %>
+   
+      
+
+  </body>
+
+  <%-  include("../partials/user_foot.ejs") %>
+</html>

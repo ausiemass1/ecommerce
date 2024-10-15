@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <%- include("../../partials/admin_head.ejs")  %>
+    <title>All products</title>
+</head>
+<body>
+    <header>
+        <%- include("../../partials/admin_navbar1.ejs")  %>
+    </header>
+    <main>
+        <div class="container"><br><br>
+            <h3 class="center-align">All Brands</h3>
+        <table>
+            <thead>
+              <tr>
+                  <th>id</th>
+                  <th>Brand Name</th>
+                  <th>Description</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+              </tr>
+            </thead>
+    
+            <tbody>
+              <%  results.forEach(item =>{ %>
+                <tr>
+                  <td><%= item.id %></td>
+                  <td><%= item.brand_name %></td>
+                  <td><%= item.description %></td>
+                  <td><a href="#"><i class="material-icons blue-text">edit</i></a></td>
+                  <td><a href="#"><i class="material-icons red-text">delete</i></a></td>
+                </tr>
+             <% }) %>
+              
+            </tbody>
+          </table>
+        </div><br><br>
+    </main>
+    <!-- footer here -->
+    <%-  include("../../partials/admin_footer.ejs")  %>
+    
+</body>
+<%- include("../../partials/admin_foot.ejs")  %>
+</html>

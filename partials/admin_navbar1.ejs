@@ -1,0 +1,48 @@
+<!-- first Nav Bar -->
+
+<div class="navbar-fixed">
+<!-- Dropdown Structure -->
+<ul id="dropdown1" class="dropdown-content">
+    <li><a href="/admin/all_products">All products</a></li>
+    <li class="divider"></li>
+    <li><a href="/admin/insertproduct">Insert Product</a></li>
+  </ul>
+
+  <ul id="dropdown2" class="dropdown-content">
+    <li><a href="/admin/all_categories">All Categories</a></li>
+    <li class="divider"></li>
+    <li><a href="/admin/insertcategory">Insert Category</a></li>
+  </ul>
+  
+  <ul id="dropdown3" class="dropdown-content">
+    <li><a href="/admin/all_brands">All Brands</a></li>
+    <li class="divider"></li>
+    <li><a href="/admin/insertbrand">Insert Brand</a></li>
+  </ul>
+  
+  <nav>
+    <div class="nav-wrapper">
+      <a href="/" class="brand-logo right"><img style="height: 56px; object-fit: contain; padding-top: 5px;" src="../public/images/demo-text-logo-design-icon-600nw-1765746851.webp" alt=""></a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="left hide-on-med-and-down">
+        <li><a href="/admin" class="tooltipped" data-position="bottom" data-tooltip="Home"><i class="material-icons right">home</i></a></li>
+        <li><a class="dropdown-trigger" href="/admin/all_products" data-target="dropdown1">Products<i class="material-icons right">arrow_drop_down</i></a></li>
+        <li><a class="dropdown-trigger" href="/admin/all_categories" data-target="dropdown2">Categories<i class="material-icons right">arrow_drop_down</i></a></li>
+        <li><a class="dropdown-trigger" href="/admin/all_brands" data-target="dropdown3">Brands<i class="material-icons right">arrow_drop_down</i></a></li>
+      
+        <li><a href="/admin/users"> Users</a></li>
+        <li><a href="/logout" class="">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <ul class="sidenav" id="mobile-demo">
+    <li><a href="/admin/all_products">All Products</a></li>
+    <li><a href="/admin/insertproduct">Insert product</a></li>
+    <li><a href="/admin/all_brands">All Brands</a></li>
+    <li><a href="/admin/insertbrand">Insert Brand</a></li>
+    <li><a href="/admin/all_categories">All Categories</a></li>
+    <li><a href="/admin/insertcategory">Insert Categories</a></li>
+    <li><a href="/logout">Logout</a></li>
+  </ul>
+
+  </div>

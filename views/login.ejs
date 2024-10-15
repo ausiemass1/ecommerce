@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>login</title>
+    <!-- Required meta tags -->
+    <%- include("../partials/user_head.ejs") %>
+  </head>
+
+  <body>
+    <header>
+      <!-- place navbar here -->
+      <%- include("../partials/user_navbar1.ejs") %> 
+      <%- include("../partials/user_navbar2.ejs") %>
+    </header>
+    <main>
+      <div class="container">
+        <h3 class="center-align">Login to shop online</h3>
+        <p class="">
+          Are you registered yet? <a href="/register">Please Register</a>
+        </p>
+        <form action="/auth" method="post">
+          <label for="username">Username:</label>
+          <input type="text" name="username" /><br /><br />
+
+          <label for="password">Password:</label>
+          <input type="password" name="password" /><br /><br />
+          <input type="submit" value="Login" class="btn btn-primary" />
+        </form>
+        <br /><br />
+      </div>
+    </main>
+
+    <!-- place footer here -->
+    <%- include("../partials/admin_footer.ejs") %>
+  </body>
+  <%- include("../partials/user_foot.ejs") %>
+</html>

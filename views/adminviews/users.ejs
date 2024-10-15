@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>users</title>
+    <!-- Required meta tags -->
+    <%- include("../../partials/admin_head.ejs") %>
+  </head>
+
+  <body>
+    <header>
+      <!-- place navbar here -->
+      <%- include("../../partials/admin_navbar1.ejs") %>
+    </header>
+    <main>
+      <div class="container">
+        <br />
+        <h3 class="center-align">All Users</h3>
+        <br />
+        <!-- Display success flash message -->
+    <% if (error_msg) { %>
+      <p style="color: green;"><%= success_msg %></p>
+  <% } %>
+
+
+
+        <table class="responsive-table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Password</th>
+              <th scope="col">Surname</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Email</th>
+              <th scope="col">Edit</th>
+              <th scope="col">Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% results.forEach(function(item) { %>
+
+            <tr>
+              <th scope="row"><%= item.id %></th>
+              <td><%= item.name %></td>
+              <td><%= item.password %></td>
+              <td><%= item.surname %></td>
+              <td><%= item.phone %></td>
+              <td><%= item.email %></td>
+
+              <td>
+                <a href="/admin/edituser/<%= item.id %>">
+                  <i class="material-icons">edit</i></a
+                >
+              </td>
+              <td>
+                <!-- Modal Trigger -->
+                <a class="waves-effect waves-light modal-trigger" href="#modal1"
+                  ><i class="material-icons red-text">delete</i></a
+                >
+                <!-- <a href="/admin/edituser/<%= item.id %>"><i class="material-icons">edit</i></a> -->
+
+                <!-- Modal Structure -->
+                <div id="modal1" class="modal">
+                  <div class="modal-content red-text">
+                    <h4>Delete User</h4>
+                    <p>Do You really want to Delete this User?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <a
+                      href="#!"
+                      class="modal-action modal-close waves-effect waves-green btn-flat"
+                      >Close</a
+                    >
+                    <a
+                      href="/deleteuser/<%= item.id %>"
+                      class="modal-action modal-close waves-effect waves-green btn-flat"
+                      >Agree</a
+                    >
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <% }) %>
+          </tbody>
+        </table>
+        <br /><br />
+      </div>
+    </main>
+
+    <!--------------------------- place footer here ---------------------------->
+    <%- include("../../partials/admin_footer.ejs") %>
+  </body>
+
+  <!------------------------------------------ All javascript links are in admin_foot.ejs ---------------------------->
+  <%- include("../../partials/admin_foot.ejs") %>
+</html>

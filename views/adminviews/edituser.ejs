@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>editUser</title>
+    <!-- Required meta tags -->
+    <%-  include("../../partials/admin_head.ejs") %>
+  </head>
+
+  <body>
+    <header>
+      <!-- place navbar here -->
+      <%- include("../../partials/admin_navbar1.ejs") %>
+    
+    </header>
+    <main>
+      <br>
+      <div class="container ">
+        <h3 class="center-align">Edit user</h3>
+      
+        <form action="/updateuser/<%= record.id  %> " method="post">
+
+          <label for="username">Name:</label>
+          <input type="text" name="username" value="<%= record.name  %>" /><br /><br />
+
+          <label for="password">Password:</label>
+          <input type="text" name="password" value="<%= record.password  %>"/><br /><br />
+
+          <label for="surname">Surname:</label>
+          <input type="text" name="surname" value="<%= record.surname  %>" /><br /><br />
+
+          <label for="phone">Phone:</label>
+          <input type="text" name="phone" value="<%= record.phone  %>" /><br /><br />
+
+          <label for="email">email:</label>
+          <input type="text" name="email" value="<%= record.email  %>" /><br /><br />
+
+          <input type="submit" value="Update" class="btn btn-small blue"/>
+
+         
+        </form><br>
+      </div>
+    </main>
+
+      <!-- place footer here -->
+      <%- include("../../partials/admin_footer.ejs") %>
+   
+  </body>
+  <%- include("../../partials/admin_foot.ejs")  %>
+ </html>

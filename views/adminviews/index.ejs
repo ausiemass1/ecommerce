@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include("../../partials/admin_head.ejs") %>
+  <title>Revenue vs Time Line Graph</title>
+ 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .line {
+      fill: none;
+      stroke: steelblue;
+      stroke-width: 2px;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <%- include("../../partials/admin_navbar1.ejs") %>
+</header>
+
+  <main>
+    <div class="container">
+      <h4 class="center-align">Product rating</h4>
+    
+  
+      <table>
+        <thead>
+          <tr>
+              <th>Name</th>
+              <th>Item Name</th>
+              <th>Item Price</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% results.forEach(item =>{ %>
+            <tr>
+              <td><%= item.cart_id %></td>
+              <td>Eclair</td>
+              <td>$0.87</td>
+            </tr>
+
+         <% })%>
+          
+        </tbody>
+      </table>
+
+
+
+
+      <div class="chart">
+        <!-- Line Graph Container -->
+        <!-- <svg id="lineGraph" width="500" height="300"></svg> -->
+    
+        <!-- Pie Chart Container -->
+        <svg id="pieChart" width="500" height="300"></svg>
+      </div>
+</div>
+</main>
+<%-  include("../../partials/admin_footer.ejs") %>
+
+<!-- insert revenue against time graph to dashboard -->
+
+<script src="../../public/js/rating.js"></script>
+  <script src="../../public/js/revenue.js"></script>
+  
+</body>
+<%- include("../../partials/admin_foot.ejs") %>
+</html>
