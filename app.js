@@ -79,29 +79,59 @@ app.get("/admin/users", (req, res) => {
 });
 
 //======================================= logging in to the system ======================================//
-app.post("/auth", async (req, res, next) => {
-  var username = req.body.username;
-  var password = req.body.password;
+// app.post("/auth", async (req, res, next) => {
+  // var {username, password} = req.body;
 
-  var sql = `SELECT * FROM users WHERE name = "${username}"`;
-  await db.query(sql, async (err, result) => {
-    if (err) throw err;
-    if (result.length == 0) {
-      console.log("user does not exist");
-    } else {
-      var hashedpassword = result[0].password;
+  // var sql = `SELECT * FROM users WHERE name = "${username}"`;
+//   await db.query(sql, async (err, result) => {
+//     if (err) throw err;
+//     if (result.length == 0) {
+//       console.log("user does not exist");
+//     } else {
+//       var hashedpassword = result[0].password;
 
-      if (await bcrypt.compare(password, hashedpassword)) {
-        req.session.loggedin = true;
-        req.session.username = username;
-        res.redirect("/admin");
+//       if (await bcrypt.compare(password, hashedpassword)) {
+//         req.session.loggedin = true;
+//         req.session.username = username;
+//         res.redirect("/admin");
+//       } else {
+//         console.log("password incorrect!");
+//         res.send("password incorrect!");
+//       }
+//     }
+//   });
+// });
+
+
+  // Route: Handle login form submission
+  app.post('/auth', (req, res) => {
+    const { username, password } = req.body;
+    
+    // Check if the username exists
+    var sql = 'SELECT * FROM users WHERE name = ?';
+    conn.query(sql, [username], async (err, results) => {
+      if (err) throw err;
+  
+      if (results.length > 0) {
+        const user = results[0];
+  
+        // Compare the hashed password
+        const match = await bcrypt.compare(password, user.password);
+        if (match) {
+          // Set user session and redirect to the dashboard
+          req.session.loggedin = true;
+          req.session.user = user;
+          res.redirect('/admin');
+        } else {
+          res.send('Invalid credentials!');
+        }
       } else {
-        console.log("password incorrect!");
-        res.send("password incorrect!");
+        res.send('User not found!');
       }
-    }
+    });
   });
-});
+
+
 
 // ================================ admin view all products=============================//
 app.get("/admin/all_products", (req, res) => {
