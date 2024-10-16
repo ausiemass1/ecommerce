@@ -234,3 +234,18 @@ padding-left: 4rem;
   /* object-fit: contain; */
   height: 100%;
 }
+
+
+.erro{
+  color: red;
+  background-color: #ffcdd2;
+  text-align: center;
+}
+
+
+
+.success{
+  color: green;
+  background-color: #c8e6c9;
+  text-align: center;
+}

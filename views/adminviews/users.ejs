@@ -17,10 +17,7 @@
         <h3 class="center-align">All Users</h3>
         <br />
         <!-- Display success flash message -->
-    <% if (error_msg) { %>
-      <p style="color: green;"><%= success_msg %></p>
-  <% } %>
-
+        <%- include("../../partials/flash.ejs") %>
 
 
         <table class="responsive-table">

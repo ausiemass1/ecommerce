@@ -40,3 +40,17 @@ body {
   margin-left:80px; */
   background-color: green;
 }
+
+.erro{
+  color: red;
+  background-color: #ffcdd2;
+  text-align: center;
+}
+
+
+
+.success{
+  color: green;
+  background-color: #c8e6c9;
+  text-align: center;
+}

@@ -20,22 +20,22 @@
         </p>
         <form action="/auth" method="post">
           <% if (success_msg) { %>
-            <div style="color: green;">
+            <div class="success">
               <%= success_msg %>
             </div>
           <% } %>
         
           <% if (error_msg) { %>
-            <div style="color: red;">
+            <div class="erro">
               <%= error_msg %>
             </div>
           <% } %>
 
           <label for="username">Username:</label>
-          <input type="text" name="username" /><br /><br />
+          <input type="text" name="username" required /><br /><br />
 
           <label for="password">Password:</label>
-          <input type="password" name="password" /><br /><br />
+          <input type="password" name="password" required /><br /><br />
           <input type="submit" value="Login" class="btn btn-primary" />
         </form>
         <br /><br />

@@ -96,6 +96,7 @@ app.get("/admin/users", (req, res) => {
           // Set user session and redirect to the dashboard
           req.session.loggedin = true;
           req.session.user = user;
+          req.flash('success_msg', ' Successfuly logged in!');
           res.redirect('/admin');
         } else {
           // res.send('Invalid credentials!');
@@ -103,7 +104,8 @@ app.get("/admin/users", (req, res) => {
           res.redirect('/login');
         }
       } else {
-        res.send('User not found!');
+        req.flash('error_msg', 'User not found');
+        res.redirect('/login');
       }
     });
   });
@@ -194,6 +196,7 @@ app.get("/deleteuser/:id", (req, res) => {
     [id],
     (error, results, fields) => {
       if (error) throw error;
+      req.flash('error_msg', 'User deleted Successfuly');
       res.redirect("/admin/users");
     }
   ); 
@@ -216,6 +219,7 @@ app.post("/admin/insertproduct", (req, res) => {
     [product_name, description, keywords, category, brand, image.name],
     (error, results, fields) => {
       if (error) throw error;
+      req.flash('success_msg', 'Product added Successfuly');
       res.redirect("/admin/insertproduct");
     }
   );
@@ -239,7 +243,7 @@ app.post("/admin/insertcategory", (req, res) => {
     [category_name, category_description],
     (error, results, fields) => {
       if (error) throw error;
-      req.flash('success_msg', 'Form submitted successfully!');
+      req.flash('success_msg', 'Category added Successfuly');
       res.redirect("/admin/insertcategory");
     }
   );
@@ -251,6 +255,7 @@ app.post("/admin/insertbrand", (req, res) => {
   let sql = "INSERT INTO brands(brand_name,	description) VALUES(?,?)";
   conn.query(sql, [brand_name, brand_description], (error, results, fields) => {
     if (error) throw error;
+    req.flash('success_msg', 'Brand added Successfuly');
     res.redirect("/admin/insertbrand");
   });
 });
