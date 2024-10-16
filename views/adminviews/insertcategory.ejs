@@ -17,10 +17,10 @@
             <form action="/admin/insertcategory" method="post" style="width: 50%; margin: auto;">
 
               <label for="category_name">Category Name:</label>
-              <input type="text" name="category_name" /><br /><br />
+              <input type="text" name="category_name" required/><br /><br />
 
               <label for="category_description">Description</label>
-              <textarea id="category_description" name="category_description" class="materialize-textarea" ></textarea>
+              <textarea id="category_description" name="category_description" class="materialize-textarea" required ></textarea>
               <input type="submit" value="Insert" class="btn btn-primary" />
             </form>
         </div><br>
