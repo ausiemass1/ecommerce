@@ -1,16 +1,15 @@
 var express = require("express");
 var app = express();
 var bcrypt = require("bcrypt");
-var flash = require("connect-flash");
+
 var session = require("express-session");
 var file = require("express-fileupload");
 var conn = require("./dbconfig");
 var db = require("./dbconfig2");
+const flash = require('connect-flash');
 const nodemailer = require("nodemailer");
 const fileUpload = require("express-fileupload");
 const MYSQLStore = require("express-mysql-session")(session);
-
-
 
 app.set("view engine", "ejs");
 
@@ -28,6 +27,7 @@ app.use((req, res, next) => {
   res.locals.username = req.session.username;
   next();
 });
+
 app.use(express.json());
 app.use(fileUpload());
 app.use(flash());
@@ -36,8 +36,8 @@ app.use("/public", express.static("public"));
 
 // Middleware to expose flash messages to views
 app.use((req, res, next) => {
-  res.locals.success_msg = req.flash("success");
-  res.locals.error_msg = req.flash("error");
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
   next();
 });
 
@@ -78,31 +78,6 @@ app.get("/admin/users", (req, res) => {
   });
 });
 
-//======================================= logging in to the system ======================================//
-// app.post("/auth", async (req, res, next) => {
-  // var {username, password} = req.body;
-
-  // var sql = `SELECT * FROM users WHERE name = "${username}"`;
-//   await db.query(sql, async (err, result) => {
-//     if (err) throw err;
-//     if (result.length == 0) {
-//       console.log("user does not exist");
-//     } else {
-//       var hashedpassword = result[0].password;
-
-//       if (await bcrypt.compare(password, hashedpassword)) {
-//         req.session.loggedin = true;
-//         req.session.username = username;
-//         res.redirect("/admin");
-//       } else {
-//         console.log("password incorrect!");
-//         res.send("password incorrect!");
-//       }
-//     }
-//   });
-// });
-
-
   // Route: Handle login form submission
   app.post('/auth', (req, res) => {
     const { username, password } = req.body;
@@ -123,15 +98,15 @@ app.get("/admin/users", (req, res) => {
           req.session.user = user;
           res.redirect('/admin');
         } else {
-          res.send('Invalid credentials!');
+          // res.send('Invalid credentials!');
+          req.flash('error_msg', 'Invalid credentials! Try again');
+          res.redirect('/login');
         }
       } else {
         res.send('User not found!');
       }
     });
   });
-
-
 
 // ================================ admin view all products=============================//
 app.get("/admin/all_products", (req, res) => {
@@ -264,6 +239,7 @@ app.post("/admin/insertcategory", (req, res) => {
     [category_name, category_description],
     (error, results, fields) => {
       if (error) throw error;
+      req.flash('success_msg', 'Form submitted successfully!');
       res.redirect("/admin/insertcategory");
     }
   );

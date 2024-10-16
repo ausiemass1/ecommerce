@@ -19,6 +19,18 @@
           Are you registered yet? <a href="/register">Please Register</a>
         </p>
         <form action="/auth" method="post">
+          <% if (success_msg) { %>
+            <div style="color: green;">
+              <%= success_msg %>
+            </div>
+          <% } %>
+        
+          <% if (error_msg) { %>
+            <div style="color: red;">
+              <%= error_msg %>
+            </div>
+          <% } %>
+
           <label for="username">Username:</label>
           <input type="text" name="username" /><br /><br />
 
