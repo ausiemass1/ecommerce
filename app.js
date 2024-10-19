@@ -96,7 +96,7 @@ app.get("/admin/users", (req, res) => {
         if (match) {
           // Set user session and redirect to the dashboard
           req.session.loggedin = true;
-          req.session.username = username;
+          req.session.username = user.name;
           req.flash('success_msg', ' Successfuly logged in!');
           res.redirect('/admin');
         } else {

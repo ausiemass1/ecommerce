@@ -3,6 +3,17 @@
 <head>
   <%- include("../../partials/admin_head.ejs") %>
   <title>Revenue vs Time Line Graph</title>
+  <Style>
+    .cont{
+     margin-left: 1rem;
+     margin-right: 1rem;
+     margin-bottom: 0;
+    }
+    .row{
+      margin-bottom: 0;
+    }
+  
+  </Style>
 
 </head>
 <body>
@@ -11,22 +22,21 @@
 </header>
 
   <main>
-    <div class="container">
+    <div class="cont">
       <h4 class="center-align">Welcome back <%= username %></h4>
-    
+      <div class="row">
+    <div class="col s6 m2 l2 grey">
+this is the nav section
+    </div>
+
+<div class="col s6 m10 l10 red" >
+this is the main section
+</div>
+</div>
   
       
 
-
-
-
-      <div class="chart">
-        <!-- Line Graph Container -->
-        <svg id="lineGraph" width="500" height="300"></svg>
-    
-        <!-- Pie Chart Container -->
-        <svg id="pieChart" width="500" height="300"></svg>
-      </div>
+      
 </div>
 </main>
 <%-  include("../../partials/admin_footer.ejs") %>
