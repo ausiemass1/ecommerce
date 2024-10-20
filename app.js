@@ -48,12 +48,33 @@ app.get("/index", (req, res) => res.render("index"));
 app.get("/register", (req, res) => res.render("register"));
 app.get("/contact", (req, res) => res.render("contact"));
 app.get("/products", (req, res) => res.render("products"));
-app.get("/admin", (req, res) => {
+// app.get("/admin", (req, res) => {
   // conn.query("SELECT * FROM cart", (err, results)=>{
   //   if(err) throw err;
-    res.render("adminviews/");
-  }
-)
+  //   res.render("adminviews/");
+  // });
+
+// Route for displaying the pie chart
+app.get('/admin', (req, res) => {
+  const query = 'SELECT rating, COUNT(*) AS count FROM product_rating GROUP BY rating';
+  const salesquery = 'SELECT week, sales_amount FROM weekly_sales';
+  db.query(query, (err, results) => {
+    if (err) throw err;
+   
+    db.query(salesquery, (err, saleResults) => {
+      if (err) throw err;
+
+    // Pass the product ratings and weeklt sales data to the EJS template
+    res.render("adminviews/index", { ratings: results, sales: saleResults });
+  });
+});
+});
+
+
+
+
+
+
 //   });
 app.get("/admin/insertbrand", (req, res) =>
   res.render("adminviews/insertbrand")
