@@ -4,8 +4,8 @@
     <%- include("../../partials/admin_head.ejs") %>
     <title>Revenue vs Time Line Graph</title>
     <Style>
-      .cont{ margin-bottom: 0; } .row{ margin-bottom: 0; } .list_item{ display:
-      flex; flex-direction: roow; align-items: center; padding: 4px; }
+      .cont{ margin-bottom: 0; } .row{ margin-bottom: 0; margin-top: 0; } .list_item{ display:
+      flex; flex-direction: row; align-items: center; padding: 4px; }
     </Style>
   </head>
   <body>
@@ -32,22 +32,27 @@
             </ul>
           </div>
 
-          <div class="col s6 m10 l10 red" style="min-height: 100vh">
-            this is the main section
-            <div class="row green">
-              <h4 class="center-align">Welcome back <%= username %></h4>
+          <div class="col s6 m10 l10 grey lighten-4" style="min-height: 100vh">
+           
+            <div class=" green row" >
+              <h4 class="center-align" style="margin: 0; padding: 1.5rem;">Welcome back <%= username %> </h4>
             </div>
             <div class="row">
-              <div class="col s12 l6 white" style="height: 100%">
-
+              <!-- product rating pie chart -->
+              <div class="col s12 l5 white" style="height: 100%">
                 <h6 class="center-align">Product Ratings</h6>
                 <div id="chart" class="center-align"></div>
                 <!-- Pass the data to the frontend using a script tag -->
                 <script>
                   const ratingsData = <%- JSON.stringify(ratings) %>;
+                  const salesData = <%- JSON.stringify(sales) %>;
                 </script>
               </div>
-              <div class="col s12 l6 blue" style="height: 100%"></div>
+               <!-- Weekly sales bar chart -->
+              <div class="col s12 l6 white" style="height: 100%; margin-left: 1rem;">
+                <h6>Weekly Sales Bar Chart</h6>
+                <div id="saleschart"></div>
+              </div>
             </div>
           </div>
         </div>
