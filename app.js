@@ -124,7 +124,7 @@ app.get("/admin/users", (req, res) => {
 
 // ================================ admin view all products=============================//
 app.get("/admin/all_products", (req, res) => {
-  conn.query("SELECT * FROM products", (error, results) => {
+  conn.query("SELECT * FROM products LIMIT 10", (error, results) => {
     if (error) throw error;
     res.render("adminviews/all_products", { results: results });
   });

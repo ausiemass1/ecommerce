@@ -28,39 +28,24 @@
             </thead>
     
             <tbody>
-              <tr>
-                <td>Alvin</td>
-                <td>Eclair</td>
-                <td>$0.87</td>
-                <td>Alvin</td>
-                <td>Eclair</td>
-                <td>$0.87</td>
-                <td>Alvin</td>
-                <td>Edit</td>
-                <td>Delete</td>
-              </tr>
-              <tr>
-                <td>Alan</td>
-                <td>Jellybean</td>
-                <td>$3.76</td>
-                <td>Alan</td>
-                <td>Jellybean</td>
-                <td>$3.76</td>
-                <td>Alan</td>
-                <td>Edit</td>
-                <td>Delete</td>
-              </tr>
-              <tr>
-                <td>Jonathan</td>
-                <td>Lollipop</td>
-                <td>$7.00</td>
-                <td>Alan</td>
-                <td>Jellybean</td>
-                <td>$3.76</td>
-                <td>Alan</td>
-                <td>Delete</td>
-                <td>Edit</td>
-              </tr>
+              <% results.forEach(product=>{ %>
+                <tr>
+                  <td><%= product.id %></td>
+                  <td><%= product.product_name %></td>
+                  <td><img src="../../public/uploads/<%= product.image %>" alt="Product image" style="width: 5rem;" ></td>
+                  
+                  <td><%= product.description %></td>
+                  <td><%= product.keywords %></td>
+                  <td><%= product.category %></td>
+                  <td><%= product.brand %></td>
+                  <td><i class="material-icons blue-text">edit</i></td>
+                  <td><i class="material-icons red-text">delete</i></td>
+                </tr>
+
+
+             <% })  %>
+             
+            
             </tbody>
           </table>
         </div><br><br>

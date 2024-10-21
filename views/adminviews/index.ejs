@@ -4,8 +4,11 @@
     <%- include("../../partials/admin_head.ejs") %>
     <title>Revenue vs Time Line Graph</title>
     <Style>
-      .cont{ margin-bottom: 0; } .row{ margin-bottom: 0; margin-top: 0; } .list_item{ display:
-      flex; flex-direction: row; align-items: center; padding: 4px; }
+      .cont{ margin-bottom: 0; } .row{ margin-bottom: 0; margin-top: 0; }
+      .list_item{ display: flex; flex-direction: row; align-items: center; padding: 4px; height: 3rem;}
+      .list_item a{
+          color: #0d160c;
+        }
     </Style>
   </head>
   <body>
@@ -14,28 +17,93 @@
     <main>
       <div class="cont">
         <div class="row">
+          <!-- grey side nav bar -->
           <div class="col s6 m2 l2 grey" style="min-height: 100vh">
             <ul>
-              <li class="list_item">
-                <span
+              <hr>
+              <h6 class="center-align">Admin tools</h6>
+            <hr>
+              <li class="list_item ">
+                <i
                   class="material-icons white-text"
                   style="padding-right: 4px"
                 >
-                  account_circle
-                </span>
+                manage_accounts
+                </i>
                 <a href="#"> account</a>
               </li>
+              <li class="list_item">
+                <i
+                  class="material-icons white-text"
+                  style="padding-right: 4px"
+                >
+                qr_code_2
+                </i>
+                <a href="#"> Product</a>
+              </li>
+              <li class="list_item ">
+                <i
+                  class="material-icons white-text"
+                  style="padding-right: 4px"
+                >
+                <span class="material-symbols-outlined">
+                  signal_cellular_alt
+                  </span>
+                </i>
+                <a href="#"> Analytics</a>
+              </li>
+              <li class="list_item">
+                <i
+                  class="material-icons white-text"
+                  style="padding-right: 4px"
+                >
+                query_stats
+                </i>
+                <a href="#"> Reports</a>
+              </li><br><br>
+              <hr>
+              <h6 class="center-align">Configuration</h6>
+              <hr>
+              <li class="list_item ">
+                <i
+                  class="material-icons white-text"
+                  style="padding-right: 4px"
+                >
+                settings
+                </i>
+                <a href="#"> Settings</a>
+              </li>
+              <li class="list_item">
+                <i
+                  class="material-icons white-text"
+                  style="padding-right: 4px"
+                >
+              lock
+                </i>
+                <a href="#"> Privacy</a>
+              </li>
+              <li class="list_item ">
+                <i
+                  class="material-icons white-text"
+                  style="padding-right: 4px"
+                >
+                  logout
+                </i>
+                <a href="/logout"> Logout</a>
+              </li>
+            
               <li><a href="#"></a></li>
               <li><a href="#"></a></li>
               <li><a href="#"></a></li>
               <li><a href="#"></a></li>
             </ul>
           </div>
-
+          <!-- main content page -->
           <div class="col s6 m10 l10 grey lighten-4" style="min-height: 100vh">
-           
-            <div class=" green row" >
-              <h4 class="center-align" style="margin: 0; padding: 1.5rem;">Welcome back <%= username %> </h4>
+            <div class="grey lighten-4 row">
+              <h4 class="center-align" style="margin: 0; padding: 1.5rem">
+                Welcome back <%= username %>
+              </h4>
             </div>
             <div class="row">
               <!-- product rating pie chart -->
@@ -48,8 +116,11 @@
                   const salesData = <%- JSON.stringify(sales) %>;
                 </script>
               </div>
-               <!-- Weekly sales bar chart -->
-              <div class="col s12 l6 white" style="height: 100%; margin-left: 1rem;">
+              <!-- Weekly sales bar chart -->
+              <div
+                class="col s12 l6 white"
+                style="height: 100%; margin-left: 1rem"
+              >
                 <h6>Weekly Sales Bar Chart</h6>
                 <div id="saleschart"></div>
               </div>
