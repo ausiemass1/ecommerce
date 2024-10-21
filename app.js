@@ -48,13 +48,23 @@ app.get("/index", (req, res) => res.render("index"));
 app.get("/register", (req, res) => res.render("register"));
 app.get("/contact", (req, res) => res.render("contact"));
 app.get("/products", (req, res) => res.render("products"));
-app.get("/admin", (req, res) => {
-  // conn.query("SELECT * FROM cart", (err, results)=>{
-  //   if(err) throw err;
-    res.render("adminviews/");
-  }
-)
-//   });
+
+// Route for displaying the the admin dashboard
+app.get('/admin', (req, res) => {
+  const query = 'SELECT rating, COUNT(*) AS count FROM product_rating GROUP BY rating';
+  const salesquery = 'SELECT week, sales_amount FROM weekly_sales';
+  db.query(query, (err, results) => {
+    if (err) throw err;
+   
+    db.query(salesquery, (err, saleResults) => {
+      if (err) throw err;
+
+    // Pass the product ratings and weeklt sales data to the EJS template
+    res.render("adminviews/index", { ratings: results, sales: saleResults });
+  });
+});
+});
+
 app.get("/admin/insertbrand", (req, res) =>
   res.render("adminviews/insertbrand")
 );
@@ -96,7 +106,8 @@ app.get("/admin/users", (req, res) => {
         if (match) {
           // Set user session and redirect to the dashboard
           req.session.loggedin = true;
-          req.session.username = username;
+          req.session.username = user.name;
+         
           req.flash('success_msg', ' Successfuly logged in!');
           res.redirect('/admin');
         } else {
@@ -113,7 +124,7 @@ app.get("/admin/users", (req, res) => {
 
 // ================================ admin view all products=============================//
 app.get("/admin/all_products", (req, res) => {
-  conn.query("SELECT * FROM products", (error, results) => {
+  conn.query("SELECT * FROM products LIMIT 10", (error, results) => {
     if (error) throw error;
     res.render("adminviews/all_products", { results: results });
   });
