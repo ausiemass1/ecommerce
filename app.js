@@ -6,10 +6,9 @@ var session = require("express-session");
 var file = require("express-fileupload");
 var conn = require("./dbconfig");
 var db = require("./dbconfig2");
-const flash = require('connect-flash');
-const nodemailer = require("nodemailer");
-const fileUpload = require("express-fileupload");
-const MYSQLStore = require("express-mysql-session")(session);
+var flash = require('connect-flash');
+var nodemailer = require("nodemailer");
+var fileUpload = require("express-fileupload");
 
 app.set("view engine", "ejs");
 
