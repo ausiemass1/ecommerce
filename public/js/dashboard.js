@@ -1,6 +1,5 @@
 
 // product ratings pie chart
-
 document.addEventListener('DOMContentLoaded', function () {
   const data = ratingsData.map(d => ({ rating: d.rating, count: d.count }));
 
@@ -43,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // weekly sales bar chart
-
 document.addEventListener('DOMContentLoaded', function () {
   const data = salesData.map(d => ({ week: d.week, sales: d.sales_amount }));
 
