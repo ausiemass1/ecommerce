@@ -45,8 +45,16 @@ app.get("/login", (req, res) => res.render("login"));
 app.get("/index", (req, res) => res.render("index"));
 // app.get("/", (req, res) => res.render("index"));
 app.get("/register", (req, res) => res.render("register"));
-app.get("/contact", (req, res) => res.render("contact"));
-app.get("/products", (req, res) => res.render("products"));
+app.get("/contact", (req, res) => {
+  const searchTerm = req.query.search || '';
+  res.render("contact", {searchTerm});
+} );
+
+
+app.get("/products", (req, res) =>{
+  const searchTerm = req.query.search || '';
+  res.render("products", {searchTerm});
+} );
 
 // Route for displaying the the admin dashboard
 app.get('/admin', (req, res) => {
@@ -237,15 +245,18 @@ app.post("/admin/insertproduct", (req, res) => {
 });
 
 // ==================================view products=======================//
-app.get("/view_products", (req, res) => {
-  conn.query("SELECT * FROM products", (err, results, fields) => {
-    if (err) throw err;
-    res.render("view_products", {
-      results: results,
-      menu: req.session.username,
-    });
+app.get('/view_products', (req, res) => {
+  const searchTerm = req.query.search || '';
+  const query = 'SELECT * FROM products WHERE description LIKE ? OR keywords LIKE ?';
+  
+  db.query(query, [`%${searchTerm}%`, `%${searchTerm}%`], (err, results) => {
+      if (err) throw err;
+      res.render('view_products', { results, searchTerm });
   });
 });
+
+
+
 // ================================ insert categories ========================= //
 app.post("/admin/insertcategory", (req, res) => {
   const { category_name, category_description } = req.body;
@@ -326,6 +337,7 @@ conn.query("INSERT INTO cart(user_id, product_id, Quantity, price) VALUES(?, ?,?
 
 //========================== home page with pagination============================//
 app.get("/", (req, res) => {
+  const searchTerm = req.query.search || '';
   const resultsPerPage = 3;
   conn.query("SELECT * FROM products", (err, results) => {
     if (err) throw err;
@@ -356,6 +368,7 @@ app.get("/", (req, res) => {
         numOfPages,
         iterator,
         endingLink,
+        searchTerm,
       });
     });
   });

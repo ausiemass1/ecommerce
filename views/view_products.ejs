@@ -7,7 +7,7 @@
   <body>
     <header>
       <!-- Navigation -->
-      <%- include("partials/user_navbar1.ejs") %>
+      <%- include("partials/user_search_navbar.ejs") %>
       <%- include("partials/user_navbar2.ejs") %>
     </header>
     <main>
@@ -16,7 +16,8 @@
         <h1 style="text-align: center">Products</h1>
 
         <div class="row">
-          <% results.forEach(function(item){ %>
+          <% if (results.length > 0) { %>
+          <% results.forEach(item => { %>
           <div class="col s12 m6 l4">
             <div class="card">
               <br />
@@ -45,6 +46,9 @@
             </div>
           </div>
           <% }) %>
+          <% } else { %>
+            <li>No products found.</li>
+        <% } %>
         </div>
       </div>
     </main>

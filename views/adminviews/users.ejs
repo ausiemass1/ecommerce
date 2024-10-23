@@ -2,13 +2,13 @@
 <html lang="en">
   <head>
     <title>users</title>
-    <!-- Required meta tags -->
+    <!--------------- Required meta tags ---------------->
     <%- include("../partials/admin_head.ejs") %>
   </head>
 
   <body>
     <header>
-      <!-- place navbar here -->
+      <!------------- Navigation bar --------------->
       <%- include("../partials/admin_navbar1.ejs") %>
     </header>
     <main>
@@ -17,7 +17,7 @@
         <h3 class="center-align">All Users</h3>
         <br />
         <!-- Display success flash message -->
-        <%- include("../../partials/flash.ejs") %>
+        <%- include("../partials/flash.ejs") %>
 
 
         <table class="responsive-table">
@@ -84,11 +84,9 @@
         <br /><br />
       </div>
     </main>
-
-    <!--------------------------- place footer here ---------------------------->
+    <!-------------- footer -------------->
     <%- include("../partials/admin_footer.ejs") %>
   </body>
-
-  <!------------------------------------------ All javascript links are in admin_foot.ejs ---------------------------->
+  <!--------------- All javascript links are in admin_foot.ejs --------------->
   <%- include("../partials/admin_foot.ejs") %>
 </html>
