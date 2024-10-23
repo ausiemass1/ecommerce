@@ -2,15 +2,18 @@
 <html lang="en">
   <head>
     <title>contact</title>
-    <%- include("../partials/user_head.ejs") %>
+    <%- include("partials/user_head.ejs") %>
   </head>
 
   <body>
+    <!-- navigation bar -->
     <header>
       <!-- place navbar here -->
       <%- include("../partials/user_navbar1.ejs") %> <%-
       include("../partials/user_navbar2.ejs") %>
     </header>
+
+    <!-- main content -->
     <main>
       <div class="container center-align">
         <br />
@@ -103,11 +106,17 @@
 
         <!-- google maps -->
 
-
         <div class="container">
-
-            <h5>Our Exact Location</h5>
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d41326.22959298976!2d169.37950345!3d-45.233325949999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa82b3ca9b52793c9%3A0x7860f6a1bdb7192e!2sJolendale%20Park!5e1!3m2!1sen!2snz!4v1728122075236!5m2!1sen!2snz" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <h5>Our Exact Location</h5>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d41326.22959298976!2d169.37950345!3d-45.233325949999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa82b3ca9b52793c9%3A0x7860f6a1bdb7192e!2sJolendale%20Park!5e1!3m2!1sen!2snz!4v1728122075236!5m2!1sen!2snz"
+            width="600"
+            height="450"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
         </div>
 
         <!-- social media icons from Uiverse -->
@@ -214,8 +223,8 @@
       </div>
     </main>
 
-    <!-- place footer here -->
-    <%- include("../partials/admin_footer.ejs") %>
+    <!-- footer  -->
+    <%- include("partials/admin_footer.ejs") %>
   </body>
-  <%- include("../partials/user_foot.ejs") %>
+  <%- include("partials/user_foot.ejs") %>
 </html>
