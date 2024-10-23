@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <%- include("../../partials/admin_head.ejs")  %>
+   <%- include("../partials/admin_head.ejs")  %>
     <title>All products</title>
 </head>
 <body>
     <header>
-        <%- include("../../partials/admin_navbar1.ejs")  %>
+        <%- include("../partials/admin_navbar1.ejs")  %>
     </header>
     <main>
         <div class="container"><br><br>
           <h1>Welcome back <%= username %></h1>
             <h3 class="center-align">All Categories</h3>
+            <%- include("../partials/flash.ejs")  %>
         <table>
             <thead>
               <tr>
@@ -38,8 +39,8 @@
         </div><br><br>
     </main>
     <!-- footer here -->
-    <%-  include("../../partials/admin_footer.ejs")  %>
+    <%-  include("../partials/admin_footer.ejs")  %>
     
 </body>
-<%- include("../../partials/admin_foot.ejs")  %>
+<%- include("../partials/admin_foot.ejs")  %>
 </html>

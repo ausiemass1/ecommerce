@@ -3,14 +3,14 @@
   <!DOCTYPE html>
   <html lang="en">
   <head>
-  <%- include("../partials/user_head.ejs")  %>
+  <%- include("partials/user_head.ejs")  %>
             
     <title>home</title>
   </head>
   <body>
     <header>
 
-      <%- include("../partials/user_navbar1.ejs")  %>
+      <%- include("partials/user_search_navbar.ejs")  %>
     
       
     </header>
@@ -19,7 +19,7 @@
       <div class="headerImage">
         <h1 class="white-text text-lighten-5">demo shop</h1>
         </div>
-        <%- include("../partials/user_navbar2.ejs")  %>
+        <%- include("partials/user_navbar2.ejs")  %>
 
         <ul class="pagination center-align">
           <% if(page > 1 ){%>
@@ -121,11 +121,11 @@
 
     </main>
 
-    <%-  include("../partials/admin_footer")  %>
+    <%-  include("partials/admin_footer")  %>
     
   </body>
 
-<%-  include("../partials/user_foot.ejs") %>
+<%-  include("partials/user_foot.ejs") %>
   </html>
 
 
