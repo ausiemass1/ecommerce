@@ -249,3 +249,24 @@ padding-left: 4rem;
   background-color: #c8e6c9;
   text-align: center;
 }
+
+.cart{
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+}
+
+
+.sup {
+  line-height: 5;
+  color: white;
+}
+
+nav ul a {
+  transition: background-color .3s;
+  font-size: 1rem;
+  color: #fff;
+  display: flex;
+  padding: 0 15px;
+  cursor: pointer;
+}
