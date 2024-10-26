@@ -1,0 +1,63 @@
+<thead>
+    <tr>
+        <th>Product Title</th>
+        <th>Product Image</th>
+        <th>Quantity</th>
+        <th>Total price</th>
+        <th>Remove</th>
+        <th colspan='2'>operations</th>
+    </tr>
+    </thead>
+
+
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>login</title>
+    <!-- Required meta tags -->
+    <%- include("partials/user_head.ejs") %>
+
+  </head>
+
+  <body>
+    <header>
+      <!-- place navbar here -->
+      <%- include("partials/user_navbar1.ejs") %> 
+      <%- include("partials/user_navbar2.ejs") %>
+    </header>
+  <main>
+
+   
+<div class="container">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Title</th>
+                    <th>Product Image</th>
+                    <th>Quantity</th>
+                    <th>Total price</th>
+                    <th colspan='2'>operations</th>
+                </tr>
+                </thead>
+    
+            <tbody>
+              <tr>
+                <td>Alvin</td>
+                <td>image</td>
+                <td>10</td>
+                <td>$4.89</td>
+                <td>update</td>
+                <td>remove</td>
+              </tr>
+            </tbody>
+        </div>
+          </table>
+
+  </main>
+
+    <!-- place footer here -->
+    <%- include("partials/admin_footer.ejs") %>
+  </body>
+  <%- include("partials/user_foot.ejs") %>
+</html>

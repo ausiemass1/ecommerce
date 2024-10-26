@@ -43,6 +43,7 @@ app.use((req, res, next) => {
 // ============================= Routes ============================================================//
 app.get("/login", (req, res) => res.render("login"));
 app.get("/payment", (req, res) => res.render("payment"));
+app.get("/cart", (req, res) => res.render("cart"));
 app.get("/index", (req, res) => res.render("index"));
 // app.get("/", (req, res) => res.render("index"));
 app.get("/register", (req, res) => res.render("register"));
