@@ -326,10 +326,10 @@ app.post("/cart/:id", (req, res) => {
   const pid = req.params.id;
   const name = req.session.username;
   const { id, product_name, image, price, quantity } = req.body;
-  sql = "INSERT INTO cart(user_name, product_id) VALUES(?,?)";
-  conn.query(sql, [name, pid], (err, results,fields)=>{
+  sql = "INSERT INTO cart(Product_id, product_name,image, price, quantity, user_name)  VALUES(?,?,?,?,?,?) "
+  conn.query(sql, [id, product_name, image,price, quantity, name], (err, results,fields)=>{
     if(err) throw err;
-    res.redirect("/")
+    res.redirect("/",)
   })
  
 });
@@ -368,72 +368,54 @@ app.get("/", (req, res) => {
         iterator,
         endingLink,
         searchTerm,
+        cart: req.session.cart || [],
       });
     });
   });
 });
 
 
-//--------checking if product is in cart
-function isProductInCart(cart, id) {
-  for (let i = 0; i < cart.length; i++) {
-    if (cart[i].id == id) {
-      return true;
-    } else {
-      return false;
+
+// Add to Cart
+app.post('/add-to-cart/:id', (req, res) => {
+  const productId = req.params.id;
+  const quantity = parseInt(req.body.quantity);
+
+  db.query('SELECT * FROM products WHERE id = ?', [productId], (err, results) => {
+    if (err) throw err;
+
+    const product = results[0];
+    if (product) {
+      req.session.cart = req.session.cart || [];
+      const existingProductIndex = req.session.cart.findIndex(item => item.id === product.id);
+
+      if (existingProductIndex > -1) {
+        // If the product is already in the cart, update the quantity
+        req.session.cart[existingProductIndex].quantity += quantity;
+      } else {
+        // If the product is not in the cart, add it
+        req.session.cart.push({ ...product, quantity });
+      }
+      res.redirect('/');
     }
-  }
-}
-
-//total cart price function
-function calculateTotal(cart, req) {
-  let total = 0;
-  for (let i = 0; i < cart.length; i++) {
-    total += cart[i].price * cart[i].quantity;
-  }
-req.session.total = total;
-  return total;
-}
-
-//==================Adding products to cart=================//
-
-app.post("/add_to_cart", (req, res) => {
-  const { id, product_name, image, price, quantity } = req.body;
-  var product = {
-    id: id,
-    product_name: product_name,
-    image: image,
-    price: price,
-    quantity: quantity,
-  };
-
-  if (req.session.cart) {
-    var cart = req.session.cart;
-
-    if (!isProductInCart(cart, id)) {
-      cart.push(product);
-    } else{
-      req.session.cart = [product];
-      var cart = req.session.cart;
-    }
-     
-      //calculate total
-  calculateTotal(cart, req);
-  //redirect to cart page
-  res.redirect("/cart");
-  res.end();
-  
-  }
-
-  
-
+  });
 });
 
-app.get("/cart", (req, res) => {
-  var cart = req.session.cart;
-  var total = req.session.total;
-  res.render("cart", { cart: cart, total: total });
+// View Cart
+app.get('/cart', (req, res) => {
+  const cart = req.session.cart || [];
+  const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  res.render('cart', { cart, totalPrice });
 });
+
+
+// Remove from Cart
+app.get('/remove-from-cart/:id', (req, res) => {
+  const productId = parseInt(req.params.id);
+  req.session.cart = req.session.cart.filter(item => item.id !== productId);
+  res.redirect('/cart');
+});
+
 
 app.listen(3000);
 console.log("app is running at prot 3000");
