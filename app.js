@@ -1,4 +1,5 @@
 var express = require("express");
+// import express from "express";
 var app = express();
 var bcrypt = require("bcrypt");
 
@@ -10,18 +11,27 @@ var flash = require("connect-flash");
 var nodemailer = require("nodemailer");
 var fileUpload = require("express-fileupload");
 
+const dotenv = require('dotenv');
+
+
+//paypal
+
+
+
+dotenv.config(); // Load environment variables
+
 //environment variables
-const port = process.env.PORT || 3000;
-const environment = process.env.environment;
-const client_id = process.env.client_id;
-const client_secret = process.env.client_secret;
+const PORT = process.env.PORT || 3000;
+const ENVIRONMENT = process.env.ENVIRONMENT;
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
 
 app.set("view engine", "ejs");
 
 // =========================================== uses ========================================================//
 app.use(
   session({
-    secret: client_secret,
+    secret: CLIENT_SECRET,
     resave: false,
     saveUninitialized: true,
   })
@@ -429,6 +439,60 @@ app.get('/payment', (req, res) => {
   const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   res.render('payment', { cart, totalPrice });
 });
+
+// PayPal Payment Processing
+app.get('/pay', (req, res) => {
+  const totalPrice = req.body.amount;
+
+  const payer = {
+    intent: 'sale',
+    payer: {
+      payment_method: 'paypal'
+    },
+    transactions: [{
+      amount: {
+        total: 100,
+        currency: 'USD'
+      },
+      description: 'Purchase from demo store'
+    }],
+    redirect_urls: {
+      return_url: 'http://localhost:3000/success',
+      cancel_url: 'http://localhost:3000/cancel'
+    }
+  };
+
+  // PayPal API call
+  const paypal = require('paypal-rest-sdk');
+  paypal.configure({
+    mode: 'sandbox', // sandbox or live
+    client_id: process.env.CLIENT_ID,
+    client_secret: process.env.CLIENT_SECRET
+  });
+
+  paypal.payment.create(payer, (error, payment) => {
+    if (error) {
+      console.error(error);
+      res.status(500).send('Payment creation failed!');
+    } else {
+      res.redirect(payment.links[1].href); // Redirect to PayPal for approval
+    }
+  });
+});
+
+// Success and Cancel routes
+app.get('/success', (req, res) => {
+  req.session.cart = []; // Clear the cart after successful payment
+  res.send('Payment successful!');
+});
+
+app.get('/cancel', (req, res) => {
+  res.send('Payment cancelled!');
+});
+
+
+
+
 
 app.listen(3000);
 console.log("app is running at prot 3000");

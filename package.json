@@ -13,6 +13,7 @@
   "author": "Austin Masamhiri",
   "license": "ISC",
   "dependencies": {
+    "@paypal/checkout-server-sdk": "^1.0.3",
     "alert": "^6.0.2",
     "bcrypt": "^5.1.1",
     "connect-flash": "^0.1.1",
@@ -28,6 +29,7 @@
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.15",
     "path": "^0.12.7",
+    "paypal-rest-sdk": "^1.8.1",
     "popup": "^0.0.3",
     "popups": "^1.1.3"
   },

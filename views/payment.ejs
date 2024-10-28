@@ -231,7 +231,7 @@ input {
   <div class="card checkout">
     <div class="footer">
       <label class="price">$<%= (totalPrice*0.15 + totalPrice + 0.10 *totalPrice ).toFixed(2) %></label>
-      <button class="checkout-btn">Cornfirm Payment</button> <a class="checkout-btn red lighten-2" type="submit"href="/cart" >cancel</a>
+      <a class="checkout-btn" href="/pay">Cornfirm Payment</a> <a class="checkout-btn red lighten-2" type="submit"href="/cart" >cancel</a>
     </div>
   </div>
 </div>
@@ -242,5 +242,10 @@ input {
     <!-- place footer here -->
     <%- include("partials/admin_footer.ejs") %>
   </body>
+
+  <script
+  src="https://www.paypal.com/sdk/js?client-id=test&buyer-country=US&currency=USD&components=buttons&enable-funding=venmo,paylater,card"
+  data-sdk-integration-source="developer-studio"
+></script>
   <%- include("partials/user_foot.ejs") %>
 </html>
