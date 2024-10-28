@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>login</title>
+    <!-- Required meta tags -->
+    <%- include("partials/user_head.ejs") %>
+
+ <style>
+.container1{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+hr {
+  height: 1px;
+  background-color: rgba(16, 86, 82, .75);
+  ;
+  border: none;
+}
+
+.card {
+  width: 400px;
+  background: rgb(255, 250, 235);
+  box-shadow: 0px 187px 75px rgba(0, 0, 0, 0.01), 0px 105px 63px rgba(0, 0, 0, 0.05), 0px 47px 47px rgba(0, 0, 0, 0.09), 0px 12px 26px rgba(0, 0, 0, 0.1), 0px 0px 0px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  width: 100%;
+  height: 40px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  border-bottom: 1px solid rgba(16, 86, 82, .75);
+  ;
+  font-weight: 700;
+  font-size: 11px;
+  color: #000000;
+}
+
+/* Cart */
+.cart {
+  border-radius: 19px 19px 0px 0px;
+}
+
+.cart .steps {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.cart .steps .step {
+  display: grid;
+  gap: 10px;
+}
+
+.cart .steps .step span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.cart .steps .step p {
+  font-size: 11px;
+  font-weight: 600;
+  color: #000000;
+}
+
+/* Promo */
+.promo form {
+  display: grid;
+  grid-template-columns: 1fr 80px;
+  gap: 10px;
+  padding: 0px;
+}
+
+.input_field {
+  width: auto;
+  height: 36px;
+  padding: 0 0 0 12px;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid  rgb(16, 86, 82);
+  background-color: rgb(251, 243, 228);
+  transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+
+  border-bottom: 0px solid #9e9e9e;
+}
+
+.input_field:focus {
+  border: 1px solid transparent;
+  box-shadow: 0px 0px 0px 2px rgb(251, 243, 228);
+  background-color: rgb(201, 193, 178);
+}
+
+.promo form button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 18px;
+  gap: 10px;
+  width: 100%;
+  height: 36px;
+  background: rgba(16, 86, 82, .75);
+  box-shadow: 0px 0.5px 0.5px #F3D2C9, 0px 1px 0.5px rgba(239, 239, 239, 0.5);
+  border-radius: 5px;
+  border: 0;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 15px;
+  color: #000000;
+}
+
+/* Checkout */
+.payments .details {
+  display: grid;
+  grid-template-columns: 10fr 1fr;
+  padding: 0px;
+  gap: 5px;
+}
+
+.payments .details span:nth-child(odd) {
+  font-size: 12px;
+  font-weight: 600;
+  color: #000000;
+  margin: auto auto auto 0;
+}
+
+.payments .details span:nth-child(even) {
+  font-size: 13px;
+  font-weight: 600;
+  color: #000000;
+  margin: auto 0 auto auto;
+}
+
+.checkout .footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 10px 10px 20px;
+  background-color: rgba(16, 86, 82, .5);
+}
+
+.price {
+  position: relative;
+  font-size: 22px;
+  color: #2B2B2F;
+  font-weight: 900;
+}
+
+.checkout .checkout-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 36px;
+  background: rgba(16, 86, 82, .55);
+  box-shadow: 0px 0.5px 0.5px rgba(16, 86, 82, .75), 0px 1px 0.5px rgba(16, 86, 82, .75);
+  ;
+  border-radius: 7px;
+  border: 1px solid rgb(16, 86, 82);
+  ;
+  color: #000000;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+}
+
+input {
+  background-color: transparent;
+    border: none;
+    border-bottom: 0;
+    border-radius: 0;
+    outline: none;
+}
+
+
+ </style>
+
+  </head>
+
+  <body>
+    <header>
+      <!-- place navbar here -->
+      <%- include("partials/user_navbar1.ejs") %> 
+      <%- include("partials/user_navbar2.ejs") %>
+    </header>
+<main>
+    <div class="container cont">
+<div class="container1 center-alignn ">
+  <div class="card cart">
+    <!-- <label class="title">CHECKOUT</label> -->
+    <div class="steps">
+      <div class="step">
+        <div>
+          <span>SHIPPING</span>
+          <p>221B Baker Street, W1U 8ED</p>
+          <p>London, United Kingdom</p>
+        </div>
+        <hr>
+        <div>
+          <span>PAYMENT METHOD</span>
+          <p>Visa</p>
+          <p>**** **** **** 4243</p>
+        </div>
+        <hr>
+        <div class="payments">
+          <span>PAYMENT</span>
+          <div class="details">
+            <span>Subtotal:</span>
+            <span>$<%= totalPrice.toFixed(2) %></span>
+            <span>Shipping:</span>
+            <span> $<%= (0.10 *totalPrice).toFixed(2) %></span>
+            <span>Tax (GST):</span>
+            <span>$<%= (totalPrice*0.15).toFixed(2) %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card checkout">
+    <div class="footer">
+      <label class="price">$<%= (totalPrice*0.15 + totalPrice + 0.10 *totalPrice ).toFixed(2) %></label>
+      <a class="checkout-btn" href="/pay">Cornfirm Payment</a> <a class="checkout-btn red lighten-2" type="submit"href="/cart" >cancel</a>
+    </div>
+  </div>
+</div>
+</div>
+</main>
+
+
+    <!-- place footer here -->
+    <%- include("partials/admin_footer.ejs") %>
+  </body>
+
+  <script
+  src="https://www.paypal.com/sdk/js?client-id=test&buyer-country=US&currency=USD&components=buttons&enable-funding=venmo,paylater,card"
+  data-sdk-integration-source="developer-studio"
+></script>
+  <%- include("partials/user_foot.ejs") %>
+</html>
