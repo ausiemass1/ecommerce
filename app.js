@@ -10,12 +10,18 @@ var flash = require("connect-flash");
 var nodemailer = require("nodemailer");
 var fileUpload = require("express-fileupload");
 
+//environment variables
+const port = process.env.PORT || 3000;
+const environment = process.env.environment;
+const client_id = process.env.client_id;
+const client_secret = process.env.client_secret;
+
 app.set("view engine", "ejs");
 
 // =========================================== uses ========================================================//
 app.use(
   session({
-    secret: "yoursecret",
+    secret: client_secret,
     resave: false,
     saveUninitialized: true,
   })
@@ -42,9 +48,9 @@ app.use((req, res, next) => {
 
 // ============================= Routes ============================================================//
 app.get("/login", (req, res) => res.render("login"));
-app.get("/payment", (req, res) => res.render("payment"));
+// app.get("/payment", (req, res) => res.render("payment"));
 app.get("/index", (req, res) => res.render("index"));
-// app.get("/", (req, res) => res.render("index"));
+app.get("/checkout", (req, res) => res.render("checkout"));
 app.get("/register", (req, res) => res.render("register"));
 app.get("/contact", (req, res) => {
   const searchTerm = req.query.search || "";
@@ -394,7 +400,8 @@ app.post('/add-to-cart/:id', (req, res) => {
         req.session.cart[existingProductIndex].quantity += quantity;
       } else {
         // If the product is not in the cart, add it
-        req.session.cart.push({ ...product, quantity });
+        req.session.cart.push({ ...product, quantity,});
+       
       }
       res.redirect('/');
     }
@@ -405,7 +412,7 @@ app.post('/add-to-cart/:id', (req, res) => {
 app.get('/cart', (req, res) => {
   const cart = req.session.cart || [];
   const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-  res.render('cart', { cart, totalPrice });
+  res.render('cart', { cart, totalPrice, });
 });
 
 
@@ -416,6 +423,12 @@ app.get('/remove-from-cart/:id', (req, res) => {
   res.redirect('/cart');
 });
 
+// Payment Page
+app.get('/payment', (req, res) => {
+  const cart = req.session.cart || [];
+  const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  res.render('payment', { cart, totalPrice });
+});
 
 app.listen(3000);
 console.log("app is running at prot 3000");

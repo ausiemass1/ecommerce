@@ -213,23 +213,15 @@ input {
           <p>**** **** **** 4243</p>
         </div>
         <hr>
-        <div class="promo">
-          <span>HAVE A PROMO CODE?</span>
-          <form class="form">
-            <input class="input_field" placeholder="Enter a Promo Code" type="text">
-       
-          </form>
-        </div>
-        <hr>
         <div class="payments">
           <span>PAYMENT</span>
           <div class="details">
             <span>Subtotal:</span>
-            <span>$240.00</span>
+            <span>$<%= totalPrice.toFixed(2) %></span>
             <span>Shipping:</span>
-            <span>$10.00</span>
-            <span>Tax:</span>
-            <span>$30.40</span>
+            <span> $<%= (0.10 *totalPrice).toFixed(2) %></span>
+            <span>Tax (GST):</span>
+            <span>$<%= (totalPrice*0.15).toFixed(2) %></span>
           </div>
         </div>
       </div>
@@ -238,8 +230,8 @@ input {
 
   <div class="card checkout">
     <div class="footer">
-      <label class="price">$280.40</label>
-      <button class="checkout-btn">Cornfirm Payment</button>
+      <label class="price">$<%= (totalPrice*0.15 + totalPrice + 0.10 *totalPrice ).toFixed(2) %></label>
+      <button class="checkout-btn">Cornfirm Payment</button> <a class="checkout-btn red lighten-2" type="submit"href="/cart" >cancel</a>
     </div>
   </div>
 </div>
