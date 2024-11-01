@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include("../partials/admin_head.ejs") %>
+    <title>Insert Brand</title>
+</head>
+<body>
+    <header>
+        <%- include("../partials/admin_navbar1.ejs") %>
+    </header>
+    
+
+    <main>
+        <div class="container"><br>
+            <h2 class="center-align">Insert Category</h3><br>
+                <%- include("../partials/flash.ejs")  %>
+            <form action="/admin/edit_category/<%= record.id  %> " method="post" style="width: 50%; margin: auto;">
+
+              <label for="category_name">Category Name:</label>
+              <input type="text" name="category_name" value="<%= record.category_name  %>" required/><br /><br />
+
+              <label for="category_description">Description</label>
+              <textarea id="category_description" name="category_description" class="materialize-textarea"   required ><%= record.description  %></textarea>
+              <input type="submit" value="Update" class="btn btn-primary" />
+            </form>
+        </div><br>
+            
+    </main>
+    <!-- footer -->
+    <%-  include("../partials/admin_footer.ejs") %>
+</body>
+<%- include("../partials/admin_foot.ejs")  %>
+</html>

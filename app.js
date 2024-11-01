@@ -139,9 +139,11 @@ app.get("/admin", (req, res) => {
 app.get("/admin/insertbrand", (req, res) =>
   res.render("adminviews/insertbrand")
 );
+// ----------------- admin insert category ----------------- //
 app.get("/admin/insertcategory", (req, res) =>
   res.render("adminviews/insertcategory")
 );
+// ----------------- admin insert Product ----------------- //
 app.get("/admin/insertproduct", (req, res) =>
   res.render("adminviews/insertproduct")
 );
@@ -208,7 +210,6 @@ app.get("/admin/all_products", (req, res) => {
   });
 });
 
-
 // ----------------- Deleting a product ----------------- /
 app.get("/admin/delete_product/:id", (req,res)=>{
   let pid = req.params.id;
@@ -228,6 +229,36 @@ app.get("/admin/all_categories", (req, res) => {
   });
 });
 
+//----------------- admin delete a category----------------- //
+app.get('/admin/delete_category/:id', (req,res)=>{
+  const categoryId = req.params.id;
+  // const sql = "DELETE FROM categories WHERE id = ? ";
+  // conn.query("DELETE FROM categories WHERE id = ? ", [categoryId], (err,results)=>{
+  //   if(err) throw err;
+  //   req.flash("err.msg", "Category deleted successfully")
+  //   res.redirect("/admin/all_categories")
+  // })
+
+  conn.query("SELECT * FROM categories", (error, results) => {
+    if (error) throw error;
+    res.render("adminviews/all_categories", { results: results });
+  });
+})
+
+//-----------------  getting category to edit----------------- //
+app.get("/admin/edit_category/:id", (req, res) => {
+  const id = req.params.id;
+
+  conn.query(
+    "SELECT * FROM categories WHERE id = ?",
+    [id],
+    (error, results, fields) => {
+      if (error) throw error;
+      res.render("adminviews/editCategory", { record: results[0] });
+    }
+  );
+});
+
 //----------------- admin view all Brands----------------- //
 app.get("/admin/all_brands", (req, res) => {
   conn.query("SELECT * FROM brands", (error, results) => {
@@ -236,15 +267,16 @@ app.get("/admin/all_brands", (req, res) => {
   });
 });
 
-
+// ----------------- admin delete Brand ----------------- //
 app.get("/admin/delete_brand/:id", (req,res)=>{
   const bid = req.params.id;
-  const sql = "DELETE FROM brands WHERE id = ?";
+  const sql = "DELETE FROM brands WHERE id = ? ";
   conn.query(sql,[bid],(err,results)=>{
     if(err) throw err;
     req.flash('error_msg', 'Brand deleted successfully');
     res.redirect("/admin/all_brands")
   })
+ 
 })
 // ----------------- inserting into users ----------------- //
 app.post("/insertuser", async (req, res) => {
