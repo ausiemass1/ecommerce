@@ -209,6 +209,16 @@ app.get("/admin/all_products", (req, res) => {
     res.render("adminviews/all_products",  { results, searchTerm });
   });
 });
+//-----------------  Getting a product to edit  ----------------- //
+app.get("/admin/edit_product/:id", (req, res)=>{
+  const productId = req.params.id;
+  const sql =  "SELECT * FROM products WHERE id = ?";
+  conn.query(sql, [productId], (err, results)=>{
+    if(err) throw err;
+    res.render('adminviews/editProduct', {record: results[0]})
+  })
+
+})
 
 // ----------------- Deleting a product ----------------- /
 app.get("/admin/delete_product/:id", (req,res)=>{
@@ -228,23 +238,6 @@ app.get("/admin/all_categories", (req, res) => {
     res.render("adminviews/all_categories", { results: results });
   });
 });
-
-//----------------- admin delete a category----------------- //
-app.get('/admin/delete_category/:id', (req,res)=>{
-  const categoryId = req.params.id;
-  // const sql = "DELETE FROM categories WHERE id = ? ";
-  // conn.query("DELETE FROM categories WHERE id = ? ", [categoryId], (err,results)=>{
-  //   if(err) throw err;
-  //   req.flash("err.msg", "Category deleted successfully")
-  //   res.redirect("/admin/all_categories")
-  // })
-
-  conn.query("SELECT * FROM categories", (error, results) => {
-    if (error) throw error;
-    res.render("adminviews/all_categories", { results: results });
-  });
-})
-
 //-----------------  getting category to edit----------------- //
 app.get("/admin/edit_category/:id", (req, res) => {
   const id = req.params.id;
@@ -259,6 +252,19 @@ app.get("/admin/edit_category/:id", (req, res) => {
   );
 });
 
+//----------------- admin delete a category----------------- //
+app.get('/admin/delete_category/:id', (req,res)=>{
+  const categoryId = req.params.id;
+  const sql = "DELETE FROM categories WHERE id = ? ";
+  conn.query("DELETE FROM categories WHERE id = ? ", [categoryId], (err,results)=>{
+    if(err) throw err;
+    req.flash("err.msg", "Category deleted successfully")
+    res.redirect("/admin/all_categories")
+  })
+
+
+});
+
 //----------------- admin view all Brands----------------- //
 app.get("/admin/all_brands", (req, res) => {
   conn.query("SELECT * FROM brands", (error, results) => {
@@ -266,6 +272,16 @@ app.get("/admin/all_brands", (req, res) => {
     res.render("adminviews/all_brands", { results: results });
   });
 });
+
+//----------------- admin edit Brand----------------- //
+app.get("/admin/edit_brand/:id", (req,res)=>{
+  const brandId = req.params.id;
+  const sql = "SELECT * FROM brands WHERE id = ?";
+  conn.query(sql, [brandId], (err, results)=>{
+    if(err) throw err;
+    res.render('adminviews/editBrand', {record: results[0]});
+  })
+})
 
 // ----------------- admin delete Brand ----------------- //
 app.get("/admin/delete_brand/:id", (req,res)=>{
@@ -323,10 +339,11 @@ app.post("/updateuser/:id", (req, res) => {
   const email = req.body.email;
 
   conn.query(
-    "UPDATE users SET name = ?, password = ?, surname = ?, phone = ?, email = ? WHERE id = ?",
-    [name, password, surname, phone, email, upid],
+    "UPDATE users SET name = ?,  surname = ?, phone = ?, email = ? WHERE id = ?",
+    [name,  surname, phone, email, upid],
     (error, results, fields) => {
       if (error) throw error;
+      req.flash("success_msg", "User updated successfully")
       res.redirect("/admin/users");
     }
   );
@@ -451,7 +468,7 @@ app.post("/cart/:id", (req, res) => {
 
 
 
-//============================================================  checkout and cart ==========================================================//
+//======================================== checkout and cart ========================================//
 // Add to Cart
 app.post("/add-to-cart/:id", (req, res) => {
   const productId = req.params.id;
@@ -510,7 +527,7 @@ app.get("/payment", (req, res) => {
   res.render("payment", { cart, totalPrice });
 });
 
-//============================================================ PayPal Payment Processing ==============================================//
+//======================================== PayPal Payment Processing ========================================//
 app.get("/pay", (req, res) => {
   const cart = req.session.cart || [];
   const totalPrice = cart.reduce(

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include("../partials/admin_head.ejs") %>
+    <title>Insert Brand</title>
+</head>
+<body>
+    <header>
+        <%- include("../partials/admin_navbar1.ejs") %>
+    </header>
+
+    <main>
+        <div class="container"><br>
+            <h2 class="center-align">Update Brand</h3><br>
+                <%- include("../partials/flash.ejs")  %>
+            <form action="/admin/insertbrand" method="post" style="width: 50%; margin: auto;">
+
+              <label for="username">Brand Name:</label>
+              <input type="text" name="brand_name" value="<%= record.brand_name %>" required/><br /><br />
+
+              <label for="textarea2">Description</label>
+              <textarea id="textarea2" name="brand_description" class="materialize-textarea" required><%= record.description %> </textarea>
+              <input type="submit" value="Update" class="btn btn-primary" />
+            </form>
+        </div><br>
+            
+    </main>
+ 
+    <%-  include("../partials/admin_footer.ejs") %>
+</body>
+<%- include("../partials/admin_foot.ejs")  %>
+</html>
