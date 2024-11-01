@@ -39,10 +39,33 @@
                   <td><%= product.keywords %></td>
                   <td><%= product.category %></td>
                   <td><%= product.brand %></td>
-                  <td><i class="material-icons blue-text">edit</i></td>
-                  <td><i class="material-icons red-text">delete</i></td>
+                  <td><a href="/admin/edit_product/<%= product.id %>"><i class="material-icons blue-text">edit</i></a></td>
+                  <td>         <!-- Modal Trigger -->
+                    <a class="waves-effect waves-light modal-trigger" href="#modal1"
+                      ><i class="material-icons red-text">delete</i></a
+                    >
+    
+                    <!-- Modal Structure- confirmation of delete -->
+                    <div id="modal1" class="modal">
+                      <div class="modal-content red-text">
+                        <h4>Delete product</h4>
+                        <p>Do You really want to Delete this Product?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <a
+                          href="#!"
+                          class="modal-action modal-close waves-effect waves-green btn-flat"
+                          >Close</a
+                        >
+                        <a
+                        href="/admin/delete_product/<%= product.id %>"
+                          class="modal-action modal-close waves-effect waves-green btn-flat"
+                          >Agree</a
+                        >
+                      </div>
+                    </div></td>
                 </tr>
-
+               
 
              <% })  %>
              

@@ -11,12 +11,9 @@ var flash = require("connect-flash");
 var nodemailer = require("nodemailer");
 var fileUpload = require("express-fileupload");
 
-const dotenv = require('dotenv');
-
+const dotenv = require("dotenv");
 
 //paypal
-
-
 
 dotenv.config(); // Load environment variables
 
@@ -49,7 +46,7 @@ app.use(flash());
 app.use(express.urlencoded({ extended: true }));
 app.use("/public", express.static("public"));
 
-// Middleware to expose flash messages to views
+//-----------------  Middleware to expose flash messages to views ----------------- //
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
@@ -57,300 +54,7 @@ app.use((req, res, next) => {
 });
 
 // ============================= Routes ============================================================//
-app.get("/login", (req, res) => res.render("login"));
-// app.get("/payment", (req, res) => res.render("payment"));
-app.get("/index", (req, res) => res.render("index"));
-app.get("/checkout", (req, res) => res.render("checkout"));
-app.get("/register", (req, res) => res.render("register"));
-app.get("/contact", (req, res) => {
-  const searchTerm = req.query.search || "";
-  res.render("contact", { searchTerm });
-});
-
-app.get("/products", (req, res) => {
-  const searchTerm = req.query.search || "";
-  res.render("products", { searchTerm });
-});
-
-// Route for displaying the the admin dashboard
-app.get("/admin", (req, res) => {
-  const query =
-    "SELECT rating, COUNT(*) AS count FROM product_rating GROUP BY rating";
-  const salesquery = "SELECT week, sales_amount FROM weekly_sales";
-  db.query(query, (err, results) => {
-    if (err) throw err;
-
-    db.query(salesquery, (err, saleResults) => {
-      if (err) throw err;
-
-      // Pass the product ratings and weeklt sales data to the EJS template
-      res.render("adminviews/index", { ratings: results, sales: saleResults });
-    });
-  });
-});
-
-app.get("/admin/insertbrand", (req, res) =>
-  res.render("adminviews/insertbrand")
-);
-app.get("/admin/insertcategory", (req, res) =>
-  res.render("adminviews/insertcategory")
-);
-app.get("/admin/insertproduct", (req, res) =>
-  res.render("adminviews/insertproduct")
-);
-
-app.get("/testing", (req, res) => res.render("testing"));
-// ===================================== viewing all users=============================================//
-app.get("/admin/users", (req, res) => {
-  conn.query(
-    "SELECT * FROM users ORDER BY RAND() LIMIT 10",
-    (error, results, fields) => {
-      if (error) throw error;
-      if (req.session.loggedin) {
-        res.render("adminviews/users", { results: results });
-      } else {
-        req.flash("error", "This is an error message!");
-        res.redirect("/login");
-      }
-    }
-  );
-});
-
-// Route: Handle login form submission
-app.post("/auth", (req, res) => {
-  const { username, password } = req.body;
-
-  // Check if the username exists
-  var sql = "SELECT * FROM users WHERE name = ?";
-  conn.query(sql, [username], async (err, results) => {
-    if (err) throw err;
-
-    if (results.length > 0) {
-      const user = results[0];
-
-      // Compare the hashed password
-      const match = await bcrypt.compare(password, user.password);
-      if (match) {
-        // Set user session and redirect to the dashboard
-        req.session.loggedin = true;
-        req.session.username = user.name;
-
-        req.flash("success_msg", " Successfuly logged in!");
-        res.redirect("/admin");
-      } else {
-        // res.send('Invalid credentials!');
-        req.flash("error_msg", "Invalid credentials! Try again");
-        res.redirect("/login");
-      }
-    } else {
-      req.flash("error_msg", "User not found");
-      res.redirect("/login");
-    }
-  });
-});
-
-// ================================ admin view all products=============================//
-app.get("/admin/all_products", (req, res) => {
-  conn.query("SELECT * FROM products LIMIT 10", (error, results) => {
-    if (error) throw error;
-    res.render("adminviews/all_products", { results: results });
-  });
-});
-
-// ================================ admin view all Categories=============================//
-app.get("/admin/all_categories", (req, res) => {
-  conn.query("SELECT * FROM categories", (error, results) => {
-    if (error) throw error;
-    res.render("adminviews/all_categories", { results: results });
-  });
-});
-
-// ================================ admin view all Brands=============================//
-app.get("/admin/all_brands", (req, res) => {
-  conn.query("SELECT * FROM brands", (error, results) => {
-    if (error) throw error;
-    res.render("adminviews/all_brands", { results: results });
-  });
-});
-
-// ========================================== inserting into users =====================================//
-app.post("/insertuser", async (req, res) => {
-  let id = req.body.id;
-  let name = req.body.username;
-  let password = req.body.password;
-  let surname = req.body.surname;
-  let phone = req.body.phone;
-  let email = req.body.email;
-  let hash = await bcrypt.hash(password, 10);
-  conn.query(
-    "INSERT INTO users VALUES(?,?,?,?,?,?)",
-    [id, name, hash, surname, phone, email],
-    (error, results, fields) => {
-      if (error) throw error;
-      res.send(
-        `<script>alert("Data inserted successfully"); window.location.href = "/login"; </script>`
-      );
-    }
-  );
-});
-
-//==================================== getting user to edit===========================//
-app.get("/admin/edituser/:id", (req, res) => {
-  const id = req.params.id;
-
-  conn.query(
-    "SELECT * FROM users WHERE id = ?",
-    [id],
-    (error, results, fields) => {
-      if (error) throw error;
-      res.render("adminviews/edituser", { record: results[0] });
-    }
-  );
-});
-
-// ===================================== updating users table========================//
-app.post("/updateuser/:id", (req, res) => {
-  const upid = req.params.id;
-  const name = req.body.username;
-  const password = req.body.password;
-  const surname = req.body.surname;
-  const phone = req.body.phone;
-  const email = req.body.email;
-
-  conn.query(
-    "UPDATE users SET name = ?, password = ?, surname = ?, phone = ?, email = ? WHERE id = ?",
-    [name, password, surname, phone, email, upid],
-    (error, results, fields) => {
-      if (error) throw error;
-      res.redirect("/admin/users");
-    }
-  );
-});
-
-// ======================================== deleting a user =================================//
-app.get("/deleteuser/:id", (req, res) => {
-  const id = req.params.id;
-  conn.query(
-    "DELETE  FROM users WHERE id = ?",
-    [id],
-    (error, results, fields) => {
-      if (error) throw error;
-      req.flash("error_msg", "User deleted Successfuly");
-      res.redirect("/admin/users");
-    }
-  );
-});
-
-// ================================ insert products ========================= //
-app.post("/admin/insertproduct", (req, res) => {
-  const { product_name, description, keywords, category, brand, price } =
-    req.body;
-  let image;
-  let uploadpath;
-  image = req.files.image;
-  uploadpath = __dirname + "/public/uploads/" + image.name;
-
-  image.mv(uploadpath, (err) => {
-    if (err) throw err;
-  });
-
-  conn.query(
-    "INSERT INTO products(product_name, description, keywords, category, brand, price, image) VALUES(?, ?, ?, ?, ?, ?, ?)",
-    [product_name, description, keywords, category, brand, price, image.name],
-    (error, results, fields) => {
-      if (error) throw error;
-      req.flash("success_msg", "Product added Successfuly");
-      res.redirect("/admin/insertproduct");
-    }
-  );
-});
-
-// ==================================view products=======================//
-app.get("/view_products", (req, res) => {
-  const searchTerm = req.query.search || "";
-  const query =
-    "SELECT * FROM products WHERE description LIKE ? OR keywords LIKE ?";
-
-  db.query(query, [`%${searchTerm}%`, `%${searchTerm}%`], (err, results) => {
-    if (err) throw err;
-    res.render("view_products", { results, searchTerm });
-  });
-});
-
-// ================================ insert categories ========================= //
-app.post("/admin/insertcategory", (req, res) => {
-  const { category_name, category_description } = req.body;
-  conn.query(
-    "INSERT INTO categories(category_name, description) VALUES(?,?)",
-    [category_name, category_description],
-    (error, results, fields) => {
-      if (error) throw error;
-      req.flash("success_msg", "Category added Successfuly");
-      res.redirect("/admin/insertcategory");
-    }
-  );
-});
-
-// ================================ insert brand ========================= //
-app.post("/admin/insertbrand", (req, res) => {
-  const { brand_name, brand_description } = req.body;
-  let sql = "INSERT INTO brands(brand_name,	description) VALUES(?,?)";
-  conn.query(sql, [brand_name, brand_description], (error, results, fields) => {
-    if (error) throw error;
-    req.flash("success_msg", "Brand added Successfuly");
-    res.redirect("/admin/insertbrand");
-  });
-});
-// ============================ logout =====================================//
-app.get("/logout", (req, res) => {
-  req.session.destroy();
-  res.redirect("/login");
-});
-
-// ============================ sending mail using contact page==============================//
-app.post("/contact", async (req, res) => {
-  const { name, email, message } = req.body;
-
-  try {
-    let transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "ausiemass@gmail.com",
-        pass: "jnqe fxlc sesy vabk",
-      },
-    });
-
-    let mailOptions = {
-      from: email,
-      to: "ausiemass@yahoo.com",
-      subject: `New message from ${name}`,
-      text: message,
-    };
-
-    let info = await transporter.sendMail(mailOptions);
-
-    console.log("Message sent: %s", info.messageId);
-    res.redirect("contact");
-  } catch (error) {
-    console.error("Error sending email: ", error);
-    res.status(500).send("Error sending email.");
-  }
-});
-
-// ============================ adding items to cart=======================//
-app.post("/cart/:id", (req, res) => {
-  const pid = req.params.id;
-  const name = req.session.username;
-  const { id, product_name, image, price, quantity } = req.body;
-  sql = "INSERT INTO cart(Product_id, product_name,image, price, quantity, user_name)  VALUES(?,?,?,?,?,?) "
-  conn.query(sql, [id, product_name, image,price, quantity, name], (err, results,fields)=>{
-    if(err) throw err;
-    res.redirect("/",)
-  })
- 
-});
-
-//========================== home page with pagination============================//
+//----------------- home page with pagination----------------- //
 app.get("/", (req, res) => {
   const searchTerm = req.query.search || "";
   const resultsPerPage = 3;
@@ -389,91 +93,432 @@ app.get("/", (req, res) => {
     });
   });
 });
+app.get("/login", (req, res) => res.render("login", {  cart: req.session.cart || [],}));
+app.get("/index", (req, res) => res.render("index"));
+app.get("/checkout", (req, res) => res.render("checkout"));
+app.get("/register", (req, res) => res.render("register", {  cart: req.session.cart || [],}));
+app.get("/contact", (req, res) => {
+  const searchTerm = req.query.search || "";
+  res.render("contact", {   cart: req.session.cart || [],});
+});
 
+//----------------- View products ----------------- //
+app.get("/view_products", (req, res) => {
+  const searchTerm = req.query.search || "";
+  const query =
+    "SELECT * FROM products WHERE description LIKE ? OR keywords LIKE ?";
 
+  db.query(query, [`%${searchTerm}%`, `%${searchTerm}%`], (err, results) => {
+    if (err) throw err;
+    res.render("view_products", { results, searchTerm });
+  });
+});
 
-// Add to Cart
-app.post('/add-to-cart/:id', (req, res) => {
-  const productId = req.params.id;
-  const quantity = parseInt(req.body.quantity);
+app.get("/products", (req, res) => {
+  const searchTerm = req.query.search || "";
+  res.render("products", { searchTerm });
+});
 
-  db.query('SELECT * FROM products WHERE id = ?', [productId], (err, results) => {
+// ----------------- admin dashboard ----------------- //
+app.get("/admin", (req, res) => {
+  const query =
+    "SELECT rating, COUNT(*) AS count FROM product_rating GROUP BY rating";
+  const salesquery = "SELECT week, sales_amount FROM weekly_sales";
+  db.query(query, (err, results) => {
     if (err) throw err;
 
-    const product = results[0];
-    if (product) {
-      req.session.cart = req.session.cart || [];
-      const existingProductIndex = req.session.cart.findIndex(item => item.id === product.id);
+    db.query(salesquery, (err, saleResults) => {
+      if (err) throw err;
 
-      if (existingProductIndex > -1) {
-        // If the product is already in the cart, update the quantity
-        req.session.cart[existingProductIndex].quantity += quantity;
+      // Pass the product ratings and weeklt sales data to the EJS template
+      res.render("adminviews/index", { ratings: results, sales: saleResults });
+    });
+  });
+});
+// ----------------- admin insert Brand ----------------- //
+app.get("/admin/insertbrand", (req, res) =>
+  res.render("adminviews/insertbrand")
+);
+app.get("/admin/insertcategory", (req, res) =>
+  res.render("adminviews/insertcategory")
+);
+app.get("/admin/insertproduct", (req, res) =>
+  res.render("adminviews/insertproduct")
+);
+
+// ----------------- viewing all users ----------------- //
+app.get("/admin/users", (req, res) => {
+  conn.query(
+    "SELECT * FROM users ORDER BY RAND() LIMIT 10",
+    (error, results, fields) => {
+      if (error) throw error;
+      if (req.session.loggedin) {
+        res.render("adminviews/users", { results: results });
       } else {
-        // If the product is not in the cart, add it
-        req.session.cart.push({ ...product, quantity,});
-       
+        req.flash("error", "This is an error message!");
+        res.redirect("/login");
       }
-      res.redirect('/');
+    }
+  );
+});
+
+//----------------- Handle login form submission ----------------- //
+app.post("/auth", (req, res) => {
+  const { username, password } = req.body;
+
+  // Check if the username exists
+  var sql = "SELECT * FROM users WHERE name = ?";
+  conn.query(sql, [username], async (err, results) => {
+    if (err) throw err;
+
+    if (results.length > 0) {
+      const user = results[0];
+
+      // Compare the hashed password
+      const match = await bcrypt.compare(password, user.password);
+      if (match) {
+        // Set user session and redirect to the dashboard
+        req.session.loggedin = true;
+        req.session.username = user.name;
+
+        req.flash("success_msg", " Successfuly logged in!");
+        res.redirect("/admin");
+      } else {
+        // res.send('Invalid credentials!');
+        req.flash("error_msg", "Invalid credentials! Try again");
+        res.redirect("/login");
+      }
+    } else {
+      req.flash("error_msg", "User not found");
+      res.redirect("/login");
     }
   });
 });
 
-// View Cart
-app.get('/cart', (req, res) => {
-  const cart = req.session.cart || [];
-  const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-  res.render('cart', { cart, totalPrice, });
+// -----------------  admin view all products----------------- //
+app.get("/admin/all_products", (req, res) => {
+
+  const searchTerm = req.query.search || "";
+  const query =
+    "SELECT * FROM products WHERE description LIKE ? OR keywords LIKE ?";
+
+  db.query(query, [`%${searchTerm}%`, `%${searchTerm}%`], (err, results) => {
+    if (err) throw err;
+    res.render("adminviews/all_products",  { results, searchTerm });
+  });
 });
 
 
+// ----------------- Deleting a product ----------------- /
+app.get("/admin/delete_product/:id", (req,res)=>{
+  let pid = req.params.id;
+  const sql = "DELETE FROM products WHERE id = ?";
+  conn.query(sql,[pid], (err, results)=>{
+    if(err) throw err;
+    req.flash("error_msg", "Product deleted Successfuly");
+    res.redirect('/admin/all_products');
+  })
+})
+
+// ----------------- admin view all Categories ----------------- /
+app.get("/admin/all_categories", (req, res) => {
+  conn.query("SELECT * FROM categories", (error, results) => {
+    if (error) throw error;
+    res.render("adminviews/all_categories", { results: results });
+  });
+});
+
+//----------------- admin view all Brands----------------- //
+app.get("/admin/all_brands", (req, res) => {
+  conn.query("SELECT * FROM brands", (error, results) => {
+    if (error) throw error;
+    res.render("adminviews/all_brands", { results: results });
+  });
+});
+
+
+app.get("/admin/delete_brand/:id", (req,res)=>{
+  const bid = req.params.id;
+  const sql = "DELETE FROM brands WHERE id = ?";
+  conn.query(sql,[bid],(err,results)=>{
+    if(err) throw err;
+    req.flash('error_msg', 'Brand deleted successfully');
+    res.redirect("/admin/all_brands")
+  })
+})
+// ----------------- inserting into users ----------------- //
+app.post("/insertuser", async (req, res) => {
+  let id = req.body.id;
+  let name = req.body.username;
+  let password = req.body.password;
+  let surname = req.body.surname;
+  let phone = req.body.phone;
+  let email = req.body.email;
+  let hash = await bcrypt.hash(password, 10);
+  conn.query(
+    "INSERT INTO users VALUES(?,?,?,?,?,?)",
+    [id, name, hash, surname, phone, email],
+    (error, results, fields) => {
+      if (error) throw error;
+      res.send(
+        `<script>alert("Data inserted successfully"); window.location.href = "/login"; </script>`
+      );
+    }
+  );
+});
+
+//-----------------  getting user to edit----------------- //
+app.get("/admin/edituser/:id", (req, res) => {
+  const id = req.params.id;
+
+  conn.query(
+    "SELECT * FROM users WHERE id = ?",
+    [id],
+    (error, results, fields) => {
+      if (error) throw error;
+      res.render("adminviews/edituser", { record: results[0] });
+    }
+  );
+});
+
+// -----------------  updating users table ----------------- //
+app.post("/updateuser/:id", (req, res) => {
+  const upid = req.params.id;
+  const name = req.body.username;
+  const password = req.body.password;
+  const surname = req.body.surname;
+  const phone = req.body.phone;
+  const email = req.body.email;
+
+  conn.query(
+    "UPDATE users SET name = ?, password = ?, surname = ?, phone = ?, email = ? WHERE id = ?",
+    [name, password, surname, phone, email, upid],
+    (error, results, fields) => {
+      if (error) throw error;
+      res.redirect("/admin/users");
+    }
+  );
+});
+
+// ----------------- deleting a user ----------------- //
+app.get("/deleteuser/:id", (req, res) => {
+  const id = req.params.id;
+  conn.query(
+    "DELETE  FROM users WHERE id = ?",
+    [id],
+    (error, results, fields) => {
+      if (error) throw error;
+      req.flash("error_msg", "User deleted Successfuly");
+      res.redirect("/admin/users");
+    }
+  );
+});
+
+//-----------------  insert products  ----------------- //
+app.post("/admin/insertproduct", (req, res) => {
+  const { product_name, description, keywords, category, brand, price } =
+    req.body;
+  let image;
+  let uploadpath;
+  image = req.files.image;
+  uploadpath = __dirname + "/public/uploads/" + image.name;
+
+  image.mv(uploadpath, (err) => {
+    if (err) throw err;
+  });
+
+  conn.query(
+    "INSERT INTO products(product_name, description, keywords, category, brand, price, image) VALUES(?, ?, ?, ?, ?, ?, ?)",
+    [product_name, description, keywords, category, brand, price, image.name],
+    (error, results, fields) => {
+      if (error) throw error;
+      req.flash("success_msg", "Product added Successfuly");
+      res.redirect("/admin/insertproduct");
+    }
+  );
+});
+
+
+
+// ----------------- insert categories -----------------  //
+app.post("/admin/insertcategory", (req, res) => {
+  const { category_name, category_description } = req.body;
+  conn.query(
+    "INSERT INTO categories(category_name, description) VALUES(?,?)",
+    [category_name, category_description],
+    (error, results, fields) => {
+      if (error) throw error;
+      req.flash("success_msg", "Category added Successfuly");
+      res.redirect("/admin/insertcategory");
+    }
+  );
+});
+
+// ----------------- Insert brand ----------------- //
+app.post("/admin/insertbrand", (req, res) => {
+  const { brand_name, brand_description } = req.body;
+  let sql = "INSERT INTO brands(brand_name,	description) VALUES(?,?)";
+  conn.query(sql, [brand_name, brand_description], (error, results, fields) => {
+    if (error) throw error;
+    req.flash("success_msg", "Brand added Successfuly");
+    res.redirect("/admin/insertbrand");
+  });
+});
+// ----------------- Logout ----------------- //
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/login");
+});
+
+//-----------------  Sending mail using contact page ----------------- //
+app.post("/contact", async (req, res) => {
+  const { name, email, message } = req.body;
+
+  try {
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "ausiemass@gmail.com",
+        pass: "jnqe fxlc sesy vabk",
+      },
+    });
+
+    let mailOptions = {
+      from: email,
+      to: "ausiemass@yahoo.com",
+      subject: `New message from ${name}`,
+      text: message,
+    };
+
+    let info = await transporter.sendMail(mailOptions);
+
+    console.log("Message sent: %s", info.messageId);
+    res.redirect("contact");
+  } catch (error) {
+    console.error("Error sending email: ", error);
+    res.status(500).send("Error sending email.");
+  }
+});
+
+// -----------------  Adding items to cart----------------- //
+app.post("/cart/:id", (req, res) => {
+  const pid = req.params.id;
+  const name = req.session.username;
+  const { id, product_name, image, price, quantity } = req.body;
+  sql =
+    "INSERT INTO cart(Product_id, product_name,image, price, quantity, user_name)  VALUES(?,?,?,?,?,?) ";
+  conn.query(
+    sql,
+    [id, product_name, image, price, quantity, name],
+    (err, results, fields) => {
+      if (err) throw err;
+      res.redirect("/");
+    }
+  );
+});
+
+
+
+//============================================================  checkout and cart ==========================================================//
+// Add to Cart
+app.post("/add-to-cart/:id", (req, res) => {
+  const productId = req.params.id;
+  const quantity = parseInt(req.body.quantity);
+
+  db.query(
+    "SELECT * FROM products WHERE id = ?",
+    [productId],
+    (err, results) => {
+      if (err) throw err;
+
+      const product = results[0];
+      if (product) {
+        req.session.cart = req.session.cart || [];
+        const existingProductIndex = req.session.cart.findIndex(
+          (item) => item.id === product.id
+        );
+
+        if (existingProductIndex > -1) {
+          // If the product is already in the cart, update the quantity
+          req.session.cart[existingProductIndex].quantity += quantity;
+        } else {
+          // If the product is not in the cart, add it
+          req.session.cart.push({ ...product, quantity });
+        }
+        res.redirect("/");
+      }
+    }
+  );
+});
+
+// View Cart
+app.get("/cart", (req, res) => {
+  const cart = req.session.cart || [];
+  const totalPrice = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+  res.render("cart", { cart, totalPrice });
+});
+
 // Remove from Cart
-app.get('/remove-from-cart/:id', (req, res) => {
+app.get("/remove-from-cart/:id", (req, res) => {
   const productId = parseInt(req.params.id);
-  req.session.cart = req.session.cart.filter(item => item.id !== productId);
-  res.redirect('/cart');
+  req.session.cart = req.session.cart.filter((item) => item.id !== productId);
+  res.redirect("/cart");
 });
 
 // Payment Page
-app.get('/payment', (req, res) => {
+app.get("/payment", (req, res) => {
   const cart = req.session.cart || [];
-  const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-  res.render('payment', { cart, totalPrice });
+  const totalPrice = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+  res.render("payment", { cart, totalPrice });
 });
 
-// PayPal Payment Processing
-app.get('/pay', (req, res) => {
-  const totalPrice = req.body.amount;
+//============================================================ PayPal Payment Processing ==============================================//
+app.get("/pay", (req, res) => {
+  const cart = req.session.cart || [];
+  const totalPrice = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  ); 
+  const finalPrice = (1.25 * totalPrice).toFixed(2)
 
   const payer = {
-    intent: 'sale',
+    intent: "sale",
     payer: {
-      payment_method: 'paypal'
+      payment_method: "paypal",
     },
-    transactions: [{
-      amount: {
-        total: 100,
-        currency: 'USD'
+    transactions: [
+      {
+        amount: {
+          total: finalPrice,
+          currency: "NZD",
+        },
+        description: "Purchase from demo store",
       },
-      description: 'Purchase from demo store'
-    }],
+    ],
     redirect_urls: {
-      return_url: 'http://localhost:3000/success',
-      cancel_url: 'http://localhost:3000/cancel'
-    }
+      return_url: "http://localhost:3000/success",
+      cancel_url: "http://localhost:3000/cancel",
+    },
   };
 
   // PayPal API call
-  const paypal = require('paypal-rest-sdk');
+  const paypal = require("paypal-rest-sdk");
   paypal.configure({
-    mode: 'sandbox', // sandbox or live
+    mode: "sandbox", // sandbox or live
     client_id: process.env.CLIENT_ID,
-    client_secret: process.env.CLIENT_SECRET
+    client_secret: process.env.CLIENT_SECRET,
   });
 
   paypal.payment.create(payer, (error, payment) => {
     if (error) {
       console.error(error);
-      res.status(500).send('Payment creation failed!');
+      res.status(500).send("Payment creation failed!");
     } else {
       res.redirect(payment.links[1].href); // Redirect to PayPal for approval
     }
@@ -481,19 +526,16 @@ app.get('/pay', (req, res) => {
 });
 
 // Success and Cancel routes
-app.get('/success', (req, res) => {
+app.get("/success", (req, res) => {
   req.session.cart = []; // Clear the cart after successful payment
-  res.send('Payment successful!');
+  res.send("Payment successful!");
 });
 
-app.get('/cancel', (req, res) => {
-  res.send('Payment cancelled!');
+app.get("/cancel", (req, res) => {
+  res.send("Payment cancelled!");
 });
+///============================================================ End of paypal payment integration ===========================================//
 
-
-
-
-
-app.listen(3000);
-console.log("app is running at prot 3000");
+app.listen(PORT, ()=>console.log("app is running at port 3000"));
+// console.log("app is running at port 3000");
 module.exports = app;
