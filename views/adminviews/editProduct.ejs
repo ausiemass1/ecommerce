@@ -15,7 +15,7 @@
         <br>
         <h3 class="center-align">Edit Poduct</h3><br>
         <%- include("../partials/flash.ejs")  %>
-         <form action="/admin/insertproduct" method="post" class="container" enctype="multipart/form-data">
+         <form action="/admin/update_product/<%= record.id %>" method="post" class="container" enctype="multipart/form-data">
            <div class="input-field col s12">
                 <input
                   placeholder="Placeholder"

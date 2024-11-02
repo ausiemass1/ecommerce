@@ -56,8 +56,14 @@ app.use((req, res, next) => {
 // ============================= Routes ============================================================//
 //----------------- home page with pagination----------------- //
 app.get("/", (req, res) => {
-  const searchTerm = req.query.search || "";
   const resultsPerPage = 3;
+  const searchTerm = req.query.search || "";
+  //cart functionality
+  const cart = req.session.cart || [];
+  const cartCount = req.session.cart ? req.session.cart.length : 0;
+  const totalPrice = req.session.cart
+    ? cart.reduce((total, item) => total + item.price * item.quantity, 0)
+    : 0.0;
   conn.query("SELECT * FROM products", (err, results) => {
     if (err) throw err;
     const numOfResults = results.length;
@@ -89,28 +95,76 @@ app.get("/", (req, res) => {
         endingLink,
         searchTerm,
         cart: req.session.cart || [],
+        cartCount,
+        totalPrice,
       });
     });
   });
 });
-app.get("/login", (req, res) => res.render("login", {  cart: req.session.cart || [],}));
+app.get("/login", (req, res) => {
+  //cart functionality
+  const cart = req.session.cart || [];
+  const cartCount = req.session.cart ? req.session.cart.length : 0;
+  const totalPrice = req.session.cart
+    ? cart.reduce((total, item) => total + item.price * item.quantity, 0)
+    : 0.0;
+  res.render("login", { cart: req.session.cart || [], cartCount, totalPrice });
+});
 app.get("/index", (req, res) => res.render("index"));
-app.get("/checkout", (req, res) => res.render("checkout"));
-app.get("/register", (req, res) => res.render("register", {  cart: req.session.cart || [],}));
+app.get("/checkout", (req, res) => {
+  //cart functionality
+  const cart = req.session.cart || [];
+  const cartCount = req.session.cart ? req.session.cart.length : 0;
+  const totalPrice = req.session.cart
+    ? cart.reduce((total, item) => total + item.price * item.quantity, 0)
+    : 0.0;
+  res.render("checkout", {cart, cartCount, totalPrice });
+});
+
+app.get("/register", (req, res) => {
+
+  //cart functionality
+  const cart = req.session.cart || [];
+  const cartCount = req.session.cart ? req.session.cart.length : 0;
+  const totalPrice = req.session.cart
+    ? cart.reduce((total, item) => total + item.price * item.quantity, 0)
+    : 0.0;
+  res.render("register", {
+    cart: req.session.cart || [],
+    cartCount,
+    totalPrice,
+  });
+});
 app.get("/contact", (req, res) => {
   const searchTerm = req.query.search || "";
-  res.render("contact", {   cart: req.session.cart || [],});
+    //cart functionality
+    const cart = req.session.cart || [];
+    const cartCount = req.session.cart ? req.session.cart.length : 0;
+    const totalPrice = req.session.cart
+      ? cart.reduce((total, item) => total + item.price * item.quantity, 0)
+      : 0.0;
+  res.render("contact", {
+    cart: req.session.cart || [],
+    cartCount,
+    totalPrice,
+  });
 });
 
 //----------------- View products ----------------- //
 app.get("/view_products", (req, res) => {
   const searchTerm = req.query.search || "";
+    //cart functionality
+    const cart = req.session.cart || [];
+    const cartCount = req.session.cart ? req.session.cart.length : 0;
+    const totalPrice = req.session.cart
+      ? cart.reduce((total, item) => total + item.price * item.quantity, 0)
+      : 0.0;
   const query =
     "SELECT * FROM products WHERE description LIKE ? OR keywords LIKE ?";
 
   db.query(query, [`%${searchTerm}%`, `%${searchTerm}%`], (err, results) => {
     if (err) throw err;
-    res.render("view_products", { results, searchTerm });
+    res.render("view_products", { results, searchTerm, cartCount, totalPrice });
   });
 });
 
@@ -199,37 +253,53 @@ app.post("/auth", (req, res) => {
 
 // -----------------  admin view all products----------------- //
 app.get("/admin/all_products", (req, res) => {
-
   const searchTerm = req.query.search || "";
   const query =
     "SELECT * FROM products WHERE description LIKE ? OR keywords LIKE ?";
 
   db.query(query, [`%${searchTerm}%`, `%${searchTerm}%`], (err, results) => {
     if (err) throw err;
-    res.render("adminviews/all_products",  { results, searchTerm });
+    res.render("adminviews/all_products", { results, searchTerm });
   });
 });
 //-----------------  Getting a product to edit  ----------------- //
-app.get("/admin/edit_product/:id", (req, res)=>{
+app.get("/admin/edit_product/:id", (req, res) => {
   const productId = req.params.id;
-  const sql =  "SELECT * FROM products WHERE id = ?";
-  conn.query(sql, [productId], (err, results)=>{
-    if(err) throw err;
-    res.render('adminviews/editProduct', {record: results[0]})
-  })
+  const sql = "SELECT * FROM products WHERE id = ?";
+  conn.query(sql, [productId], (err, results) => {
+    if (err) throw err;
+    res.render("adminviews/editProduct", { record: results[0] });
+  });
+});
 
-})
+//----------------- Update Product  ----------------- //
+app.post("/admin/update_product/:id", (req, res) => {
+  const productId = req.params.id;
+  const { product_name, description, keywords, category, brand, price } =
+    req.body;
+  const sql =
+    "UPDATE products SET product_name = ?, description = ?, keywords = ?, category = ?, brand = ?, price = ? WHERE id = ?";
+  conn.query(
+    sql,
+    [product_name, description, keywords, category, brand, price, productId],
+    (err, results) => {
+      if (err) throw err;
+      req.flash("success_msg", "Product Updated successfully");
+      res.redirect("/admin/all_products");
+    }
+  );
+});
 
 // ----------------- Deleting a product ----------------- /
-app.get("/admin/delete_product/:id", (req,res)=>{
+app.get("/admin/delete_product/:id", (req, res) => {
   let pid = req.params.id;
   const sql = "DELETE FROM products WHERE id = ?";
-  conn.query(sql,[pid], (err, results)=>{
-    if(err) throw err;
+  conn.query(sql, [pid], (err, results) => {
+    if (err) throw err;
     req.flash("error_msg", "Product deleted Successfuly");
-    res.redirect('/admin/all_products');
-  })
-})
+    res.redirect("/admin/all_products");
+  });
+});
 
 // ----------------- admin view all Categories ----------------- /
 app.get("/admin/all_categories", (req, res) => {
@@ -252,17 +322,32 @@ app.get("/admin/edit_category/:id", (req, res) => {
   );
 });
 
+//-----------------  getting category to edit----------------- //
+app.post("/admin/update_category/:id", (req, res) => {
+  const categoryId = req.params.id;
+  const { category_name, description } = req.body;
+  const sql =
+    "UPDATE categories SET category_name = ?, description = ? WHERE id = ? ";
+  conn.query(sql, [category_name, description, categoryId], (err, results) => {
+    if (err) throw err;
+    req.flash("success_msg", "Category Updated successfully");
+    res.redirect("/admin/all_categories");
+  });
+});
+
 //----------------- admin delete a category----------------- //
-app.get('/admin/delete_category/:id', (req,res)=>{
+app.get("/admin/delete_category/:id", (req, res) => {
   const categoryId = req.params.id;
   const sql = "DELETE FROM categories WHERE id = ? ";
-  conn.query("DELETE FROM categories WHERE id = ? ", [categoryId], (err,results)=>{
-    if(err) throw err;
-    req.flash("err.msg", "Category deleted successfully")
-    res.redirect("/admin/all_categories")
-  })
-
-
+  conn.query(
+    "DELETE FROM categories WHERE id = ? ",
+    [categoryId],
+    (err, results) => {
+      if (err) throw err;
+      req.flash("err.msg", "Category deleted successfully");
+      res.redirect("/admin/all_categories");
+    }
+  );
 });
 
 //----------------- admin view all Brands----------------- //
@@ -274,26 +359,37 @@ app.get("/admin/all_brands", (req, res) => {
 });
 
 //----------------- admin edit Brand----------------- //
-app.get("/admin/edit_brand/:id", (req,res)=>{
+app.get("/admin/edit_brand/:id", (req, res) => {
   const brandId = req.params.id;
   const sql = "SELECT * FROM brands WHERE id = ?";
-  conn.query(sql, [brandId], (err, results)=>{
-    if(err) throw err;
-    res.render('adminviews/editBrand', {record: results[0]});
-  })
-})
+  conn.query(sql, [brandId], (err, results) => {
+    if (err) throw err;
+    res.render("adminviews/editBrand", { record: results[0] });
+  });
+});
+
+//----------------- admin update Brand----------------- //
+app.post("/admin/update_brand/:id", (req, res) => {
+  const brandID = req.params.id;
+  const { brand_name, description } = req.body;
+  const sql = "UPDATE brands SET brand_name = ?, description = ? WHERE id = ? ";
+  conn.query(sql, [brand_name, description, brandID], (err, results) => {
+    if (err) throw err;
+    req.flash("success_msg", "Brand updated successfully");
+    res.redirect("/admin/all_brands");
+  });
+});
 
 // ----------------- admin delete Brand ----------------- //
-app.get("/admin/delete_brand/:id", (req,res)=>{
+app.get("/admin/delete_brand/:id", (req, res) => {
   const bid = req.params.id;
   const sql = "DELETE FROM brands WHERE id = ? ";
-  conn.query(sql,[bid],(err,results)=>{
-    if(err) throw err;
-    req.flash('error_msg', 'Brand deleted successfully');
-    res.redirect("/admin/all_brands")
-  })
- 
-})
+  conn.query(sql, [bid], (err, results) => {
+    if (err) throw err;
+    req.flash("error_msg", "Brand deleted successfully");
+    res.redirect("/admin/all_brands");
+  });
+});
 // ----------------- inserting into users ----------------- //
 app.post("/insertuser", async (req, res) => {
   let id = req.body.id;
@@ -340,10 +436,10 @@ app.post("/updateuser/:id", (req, res) => {
 
   conn.query(
     "UPDATE users SET name = ?,  surname = ?, phone = ?, email = ? WHERE id = ?",
-    [name,  surname, phone, email, upid],
+    [name, surname, phone, email, upid],
     (error, results, fields) => {
       if (error) throw error;
-      req.flash("success_msg", "User updated successfully")
+      req.flash("success_msg", "User updated successfully");
       res.redirect("/admin/users");
     }
   );
@@ -387,14 +483,12 @@ app.post("/admin/insertproduct", (req, res) => {
   );
 });
 
-
-
 // ----------------- insert categories -----------------  //
 app.post("/admin/insertcategory", (req, res) => {
-  const { category_name, category_description } = req.body;
+  const { category_name, description } = req.body;
   conn.query(
     "INSERT INTO categories(category_name, description) VALUES(?,?)",
-    [category_name, category_description],
+    [category_name, description],
     (error, results, fields) => {
       if (error) throw error;
       req.flash("success_msg", "Category added Successfuly");
@@ -405,9 +499,9 @@ app.post("/admin/insertcategory", (req, res) => {
 
 // ----------------- Insert brand ----------------- //
 app.post("/admin/insertbrand", (req, res) => {
-  const { brand_name, brand_description } = req.body;
+  const { brand_name, description } = req.body;
   let sql = "INSERT INTO brands(brand_name,	description) VALUES(?,?)";
-  conn.query(sql, [brand_name, brand_description], (error, results, fields) => {
+  conn.query(sql, [brand_name, description], (error, results, fields) => {
     if (error) throw error;
     req.flash("success_msg", "Brand added Successfuly");
     res.redirect("/admin/insertbrand");
@@ -466,8 +560,6 @@ app.post("/cart/:id", (req, res) => {
   );
 });
 
-
-
 //======================================== checkout and cart ========================================//
 // Add to Cart
 app.post("/add-to-cart/:id", (req, res) => {
@@ -503,11 +595,12 @@ app.post("/add-to-cart/:id", (req, res) => {
 // View Cart
 app.get("/cart", (req, res) => {
   const cart = req.session.cart || [];
+  const cartCount = req.session.cart ? req.session.cart.length : 0;
   const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
-  res.render("cart", { cart, totalPrice });
+  res.render("cart", { cart, totalPrice, cartCount });
 });
 
 // Remove from Cart
@@ -519,12 +612,13 @@ app.get("/remove-from-cart/:id", (req, res) => {
 
 // Payment Page
 app.get("/payment", (req, res) => {
+  //cart functionality
   const cart = req.session.cart || [];
-  const totalPrice = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
-  res.render("payment", { cart, totalPrice });
+  const cartCount = req.session.cart ? req.session.cart.length : 0;
+  const totalPrice = req.session.cart
+    ? cart.reduce((total, item) => total + item.price * item.quantity, 0)
+    : 0.0;
+  res.render("payment", { cart, totalPrice, cartCount });
 });
 
 //======================================== PayPal Payment Processing ========================================//
@@ -533,8 +627,8 @@ app.get("/pay", (req, res) => {
   const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
-  ); 
-  const finalPrice = (1.25 * totalPrice).toFixed(2)
+  );
+  const finalPrice = (1.25 * totalPrice).toFixed(2);
 
   const payer = {
     intent: "sale",
@@ -577,7 +671,8 @@ app.get("/pay", (req, res) => {
 // Success and Cancel routes
 app.get("/success", (req, res) => {
   req.session.cart = []; // Clear the cart after successful payment
-  res.send("Payment successful!");
+  req.flash('success_msg', "Payment successful!")
+  res.redirect("/cart");
 });
 
 app.get("/cancel", (req, res) => {
@@ -585,6 +680,6 @@ app.get("/cancel", (req, res) => {
 });
 ///============================================================ End of paypal payment integration ===========================================//
 
-app.listen(PORT, ()=>console.log("app is running at port 3000"));
+app.listen(PORT, () => console.log("app is running at port 3000"));
 // console.log("app is running at port 3000");
 module.exports = app;
