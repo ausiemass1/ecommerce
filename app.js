@@ -2,7 +2,7 @@ var express = require("express");
 // import express from "express";
 var app = express();
 var bcrypt = require("bcrypt");
-
+var paypal = require("./services/paypal")
 var session = require("express-session");
 var file = require("express-fileupload");
 var conn = require("./dbconfig");
@@ -10,7 +10,7 @@ var db = require("./dbconfig2");
 var flash = require("connect-flash");
 var nodemailer = require("nodemailer");
 var fileUpload = require("express-fileupload");
-
+var axios = require('axios');
 const dotenv = require("dotenv");
 
 //paypal
@@ -621,65 +621,105 @@ app.get("/payment", (req, res) => {
   res.render("payment", { cart, totalPrice, cartCount });
 });
 
-//======================================== PayPal Payment Processing ========================================//
-app.get("/pay", (req, res) => {
+//============================paypal processing===================================================//
+
+
+// PayPal payment route
+app.get('/pay', async (req, res) => {
+  // const total = req.body.total;
+
   const cart = req.session.cart || [];
+  const cartCount = req.session.cart ? req.session.cart.length : 0;
   const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
-  const finalPrice = (1.25 * totalPrice).toFixed(2);
 
-  const payer = {
-    intent: "sale",
-    payer: {
-      payment_method: "paypal",
-    },
-    transactions: [
-      {
-        amount: {
-          total: finalPrice,
-          currency: "NZD",
-        },
-        description: "Purchase from demo store",
+  try {
+      // Step 1: Create PayPal payment
+      const paymentResponse = await axios.post('https://api.sandbox.paypal.com/v1/payments/payment', {
+          intent: 'sale',
+          redirect_urls: {
+              return_url: `http://localhost:3000/success`,
+              cancel_url: `http://localhost:3000/cancel`
+          },
+          payer: {
+              payment_method: 'paypal'
+          },
+          transactions: [{
+              amount: {
+                  total: totalPrice,
+                  currency: 'USD'
+              },
+              description: 'Shopping Cart Total'
+          }]
+      }, {
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${await getAccessToken()}` // Get access token
+          }
+      });
+
+      // Redirect to PayPal approval URL
+      const approvalUrl = paymentResponse.data.links.find(link => link.rel === 'approval_url').href;
+      res.redirect(approvalUrl);
+  } catch (error) {
+      console.error('PayPal payment error:', error);
+      res.status(500).send('Error processing payment');
+  }
+});
+
+// Capture payment route
+app.get('/success', async (req, res) => {
+  const paymentId = req.query.paymentId;
+  const payerId = req.query.PayerID;
+
+  try {
+      // Step 2: Capture the payment
+      const captureResponse = await axios.post(`https://api.sandbox.paypal.com/v1/payments/payment/${paymentId}/execute`, {
+          payer_id: payerId
+      }, {
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${await getAccessToken()}` // Get access token
+          }
+      });
+
+      // Handle successful payment
+      res.send(`Payment successful! Amount: $${captureResponse.data.transactions[0].amount.total}`);
+  } catch (error) {
+      console.error('Payment capture error:', error);
+      res.status(500).send('Error capturing payment');
+  }
+});
+
+// Cancel route
+app.get('/cancel', (req, res) => {
+  res.send('Payment was canceled.');
+});
+
+// Function to get PayPal access token
+async function getAccessToken() {
+  const response = await axios.post('https://api.sandbox.paypal.com/v1/oauth2/token', null, {
+      auth: {
+          username: process.env.CLIENT_ID,
+          password: process.env.CLIENT_SECRET
       },
-    ],
-    redirect_urls: {
-      return_url: "http://localhost:3000/success",
-      cancel_url: "http://localhost:3000/cancel",
-    },
-  };
-
-  // PayPal API call
-  const paypal = require("paypal-rest-sdk");
-  paypal.configure({
-    mode: "sandbox", // sandbox or live
-    client_id: process.env.CLIENT_ID,
-    client_secret: process.env.CLIENT_SECRET,
+      params: {
+          grant_type: 'client_credentials'
+      },
+      headers: {
+          'Accept': 'application/json',
+          'Accept-Language': 'en_US'
+      }
   });
+  return response.data.access_token;
+}
 
-  paypal.payment.create(payer, (error, payment) => {
-    if (error) {
-      console.error(error);
-      res.status(500).send("Payment creation failed!");
-    } else {
-      res.redirect(payment.links[1].href); // Redirect to PayPal for approval
-    }
-  });
-});
 
-// Success and Cancel routes
-app.get("/success", (req, res) => {
-  req.session.cart = []; // Clear the cart after successful payment
-  req.flash('success_msg', "Payment successful!")
-  res.redirect("/cart");
-});
 
-app.get("/cancel", (req, res) => {
-  res.send("Payment cancelled!");
-});
-///============================================================ End of paypal payment integration ===========================================//
 
+// end of paypal processing
 app.listen(PORT, () => console.log("app is running at port 3000"));
 // console.log("app is running at port 3000");
 module.exports = app;
