@@ -204,7 +204,7 @@ input {
         <div>
           <span>SHIPPING</span>
           <p>221B Baker Street, W1U 8ED</p>
-          <p>London, United Kingdom</p>
+          <p>Central Otago, New Zealand</p>
         </div>
         <hr>
         <div>
@@ -229,10 +229,12 @@ input {
   </div>
 
   <div class="card checkout">
+   
     <div class="footer">
       <label class="price">$<%= (totalPrice*0.15 + totalPrice + 0.10 *totalPrice ).toFixed(2) %></label>
-      <a class="checkout-btn" href="/pay">Cornfirm Payment</a> <a class="checkout-btn red lighten-2" type="submit"href="/cart" >cancel</a>
+      <a type="submit" class="checkout-btn" href="/pay"> Cornfirm Payment </a>
     </div>
+  </form>
   </div>
 </div>
 </div>

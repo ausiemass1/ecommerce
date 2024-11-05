@@ -30,8 +30,8 @@
                   <td><%= item.id %></td>
                   <td><%= item.brand_name %></td>
                   <td><%= item.description %></td>
-                  <td><a href="#"><i class="material-icons blue-text">edit</i></a></td>
-                  <td><a href="#"><i class="material-icons red-text">delete</i></a></td>
+                  <td><a href="/admin/edit_brand/<%= item.id %>"><i class="material-icons blue-text">edit</i></a></td>
+                  <td><a href="/admin/delete_brand/<%= item.id %>"><i class="material-icons red-text">delete</i></a></td>
                 </tr>
              <% }) %>
               

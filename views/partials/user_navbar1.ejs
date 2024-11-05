@@ -46,11 +46,11 @@
      
           <a href="/cart" class="cart"
             ><i class="material-icons">shopping_cart</i
-            ><sup class="sup">(0)</sup></a
+            ><sup class="sup">(<%= cartCount  %>)</sup></a
           >
          
         </li>
-        <li><a href="#" class="">$0.00</a></li>
+        <li><a href="#" class="">$<%= totalPrice.toFixed(2) %></a></li>
       </ul>
     </div>
   </nav>

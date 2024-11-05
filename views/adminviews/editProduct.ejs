@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%-  include("../partials/admin_head.ejs") %>
+    <title>dashhboard</title>
+  </head>
+
+  <body>
+    <header>
+      <%- include("../partials/admin_navbar1.ejs") %>
+   
+    </header>
+    <main>
+      <div class="container in_prod">
+        <br>
+        <h3 class="center-align">Edit Poduct</h3><br>
+        <%- include("../partials/flash.ejs")  %>
+         <form action="/admin/update_product/<%= record.id %>" method="post" class="container" enctype="multipart/form-data">
+           <div class="input-field col s12">
+                <input
+                  placeholder="Placeholder"
+                  id="product_name"
+                  name="product_name"
+                  type="text"
+                  class="validate"
+                  value="<%= record.product_name %>"
+                  required
+                />
+                <label for="product_name">Product Name</label>
+              </div>
+          <div class="input-field col s12">
+            <input
+              placeholder="Placeholder"
+              id="description"
+              name="description"
+              type="text"
+              class="validate"
+              value="<%= record.description %>"
+              required
+            />
+            <label for="description">Description</label>
+          </div>
+          <div class="input-field col s12">
+            <input
+              placeholKeywordsder="keywords"
+              id="keywords"
+              name="keywords"
+              type="text"
+              class="validate"
+              value="<%= record.keywords %>"
+              required
+            />
+            <label for="Keywords">Keywords</label>
+          </div>
+          <div class="input-field col s12">
+            <input
+              placeholder="Category"
+              id="category"
+              name="category"
+              type="text"
+              class="validate"
+              value="<%= record.category %>"
+              required
+            />
+            <label for="category">Category</label>
+          </div>
+          <div class="input-field col s12">
+            <input
+              placeholder="brand"
+              id="brand"
+              name="brand"
+              type="text"
+              class="validate"
+              value="<%= record.brand %>"
+              required
+            />
+            <label for="brand">Brand</label>
+          </div> 
+          <div class="input-field col s12">
+            <input
+              placeholder="$0.00"
+              id="price"
+              name="price"
+              type="number"
+              step="0.01"
+              class="validate"
+              value="<%= record.price.toFixed(2) %>"
+              required
+            />
+            <label for="brand">Price</label>
+          </div> 
+          <div class="input-field col s12">
+            <!-- <label for="image">Image 1</label> -->
+            <input
+              id="image"
+              name="image"
+              type="file"
+              class="validate"
+            />
+         
+          </div>
+
+          <button class="btn blue waves-effect waves-light white-text" type="submit" name="action">Update
+            <i class="material-icons right">send</i>
+          </button>
+        </form><br><br><br>
+
+        
+      </div>
+    </main>
+
+  <!-- admin footer -->
+
+<%- include("../partials/admin_footer.ejs")  %>
+
+  <!-- end of footer -->
+  </body>
+ <!-- jquery -->
+ <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+ <!-- Compiled and minified JavaScript -->
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+ 
+ <script src="../../public/js/script.js"></script>
+</html>

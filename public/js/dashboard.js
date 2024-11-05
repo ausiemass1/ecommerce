@@ -3,8 +3,8 @@
 document.addEventListener('DOMContentLoaded', function () {
   const data = ratingsData.map(d => ({ rating: d.rating, count: d.count }));
 
-  const width = 400;
-  const height = 400;
+  const width = 200;
+  const height = 200;
   const radius = Math.min(width, height) / 2;
 
   const color = d3.scaleOrdinal()
@@ -46,8 +46,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const data = salesData.map(d => ({ week: d.week, sales: d.sales_amount }));
 
   const margin = { top: 20, right: 30, bottom: 40, left: 50 };
-  const width = 600 - margin.left - margin.right;
-  const height = 400 - margin.top - margin.bottom;
+  const width = 300- margin.left - margin.right;
+  const height = 200 - margin.top - margin.bottom;
 
   const svg = d3.select("#saleschart")
     .append("svg")
